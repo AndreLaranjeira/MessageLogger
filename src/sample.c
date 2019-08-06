@@ -9,19 +9,14 @@
 // Main function:
 int main() {
 
-  float pi = 3.14;
-  int a = 42;
-  char g = 'a';
-  char* s = "stop\0";
-
   // Basic functionality:
   printf("Basic message types: \n");
 
-  success("My lucky number is %d.\n", a);
-  warning("Variable g has value %c.\n", g);
-  error("Return message was %s.\n", s);
-  info("The value of pi is: %f.\n", pi);
-  message("Test message number %d letter %c string %s.\n", a, g, s);
+  message("This is a normal message.\n");
+  success("This is a success message.\n");
+  warning("This is a warning message.\n");
+  error("This is an error message.\n");
+  info("This is an info message.\n");
 
   printf("\n");
 

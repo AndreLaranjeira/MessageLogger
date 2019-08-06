@@ -24,6 +24,7 @@ SRC = $(patsubst %,$(SDIR)/%,$(_SRC))
 
 # Object files compilation rule:
 $(ODIR)/%.o: $(SDIR)/%$(EXT) $(DEPS)
+	@if [ ! -d src/obj ]; then mkdir src/obj; fi
 	$(CC) -c -o $@ $< $(CFLAGS)
 
 # Project executable compilation rule:
