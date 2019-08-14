@@ -27,10 +27,10 @@
 #define RESET "\x1B[0m"
 
 // Public function headers:
-void error(const char*, ...);
-void info(const char*, ...);
-void message(const char*, ...);
-void success(const char*, ...);
-void warning(const char*, ...);
+void error(const char*, const char*, ...);
+void info(const char*, const char*, ...);
+void message(const char*, const char*, ...);
+void success(const char*, const char*, ...);
+void warning(const char*, const char*, ...);
 
 #endif // MESSAGE_LOGGER_H_

@@ -4,14 +4,19 @@
 #include "message_logger.h"
 
 // Private function headers:
+void print_context(const char*);
 
 // Public function implementations:
-void error(const char *format, ...) {
+void error(const char *context, const char *format, ...) {
 
   va_list arg_list;
 
   // Start the argument list with any arguments after the format string:
   va_start(arg_list, format);
+
+  // Print context:
+  if(context != NULL)
+    print_context(context);
 
   // Print tags:
   printf(B_RED "[Error]" RESET);
@@ -25,12 +30,16 @@ void error(const char *format, ...) {
 
 }
 
-void info(const char *format, ...) {
+void info(const char *context, const char *format, ...) {
 
   va_list arg_list;
 
   // Start the argument list with any arguments after the format string:
   va_start(arg_list, format);
+
+  // Print context:
+  if(context != NULL)
+    print_context(context);
 
   // Print tags:
   printf(B_BLU "[Info]" RESET);
@@ -44,16 +53,16 @@ void info(const char *format, ...) {
 
 }
 
-void message(const char *format, ...) {
+void message(const char *context, const char *format, ...) {
 
   va_list arg_list;
 
   // Start the argument list with any arguments after the format string:
   va_start(arg_list, format);
 
-  // Print tags:
-  printf(B_WHT "[Message]" RESET);
-  printf(" ");
+  // Print context:
+  if(context != NULL)
+    print_context(context);
 
   // Print message contents:
   vprintf(format, arg_list);
@@ -63,12 +72,16 @@ void message(const char *format, ...) {
 
 }
 
-void success(const char *format, ...) {
+void success(const char *context, const char *format, ...) {
 
   va_list arg_list;
 
   // Start the argument list with any arguments after the format string:
   va_start(arg_list, format);
+
+  // Print context:
+  if(context != NULL)
+    print_context(context);
 
   // Print tags:
   printf(B_GRN "[Success]" RESET);
@@ -82,12 +95,16 @@ void success(const char *format, ...) {
 
 }
 
-void warning(const char *format, ...) {
+void warning(const char *context, const char *format, ...) {
 
   va_list arg_list;
 
   // Start the argument list with any arguments after the format string:
   va_start(arg_list, format);
+
+  // Print context:
+  if(context != NULL)
+    print_context(context);
 
   // Print tags:
   printf(B_YEL "[Warning]" RESET);
@@ -102,3 +119,7 @@ void warning(const char *format, ...) {
 }
 
 // Private function implementations:
+void print_context(const char *context) {
+  printf(B_WHT "%s: ", context);
+  printf(RESET);
+}
