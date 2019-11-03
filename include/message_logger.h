@@ -5,9 +5,10 @@
 #define MESSAGE_LOGGER_H_
 
 // Includes:
+#include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdarg.h>
+#include <time.h>
 
 // Enums:
 typedef enum {
@@ -27,13 +28,20 @@ typedef enum {
   B_MAG,
   B_CYN,
   B_WHT
-} color;
+} Color;
+
+typedef enum {
+  WRITE,            // Write to log file.
+  APPEND            // Append to log file.
+} LogFileMode;
 
 // Public function headers:
-void color_background(color);
-void color_text(color);
+int configure_log_file(const char*, LogFileMode);
+void color_background(Color);
+void color_text(Color);
 void error(const char*, const char*, ...);
 void info(const char*, const char*, ...);
+void logger_module_clean_up();
 void message(const char*, const char*, ...);
 void reset_colors();
 void success(const char*, const char*, ...);

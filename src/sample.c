@@ -31,6 +31,28 @@ int main() {
 
   printf("\n");
 
+  // Using a log file:
+  printf("Creating a log file: \n");
+
+  configure_log_file("logger-test.log", WRITE);
+
+  message("Log context 1", "This is a normal message that is being logged.\n");
+  success("Log context 2", "This is a success message that is being logged.\n");
+
+  logger_module_clean_up();
+
+  printf("\n");
+
+  printf("Append to an existing log file: \n");
+
+  configure_log_file("logger-test.log", APPEND);
+
+  success("New context", "Appended successfully.\n");
+
+  logger_module_clean_up();
+
+  printf("\n");
+
   return 0;
 
 }

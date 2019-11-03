@@ -3,11 +3,56 @@
 // Includes:
 #include "message_logger.h"
 
+// Private variables:
+char time_fmt[40] = {"%H:%M:%S %d-%m-%Y"};
+FILE *log_file = NULL;
+
 // Private function headers:
-void print_context(const char*);
+static void log_message(FILE*, const char*, const char*, const char*,
+                        const char*, va_list);
+static void log_datetime(FILE*, const char*);
+static void print_context(const char*);
 
 // Public function implementations:
-void color_background(color p_color) {
+int configure_log_file(const char *file_name , LogFileMode file_mode) {
+
+  // If there was a previous log file, we need to close it:
+  if(log_file != NULL) {
+    fclose(log_file);
+    log_file = NULL;
+  }
+
+  // Open the log file and store it's pointer for future use:
+  switch (file_mode) {
+
+    case APPEND:
+      log_file = fopen(file_name, "a");
+
+      if(log_file == NULL) {
+        warning("Logger module",
+                "Could not find log file! Defaulting to write mode!");
+        log_file = fopen(file_name, "w");
+      }
+
+      break;
+
+    case WRITE:
+      log_file = fopen(file_name, "w");
+      break;
+
+  }
+
+  if(log_file == NULL) {
+    error("Logger module",
+          "Could not create log file! Please check your system.");
+    return -1;
+  }
+
+  return 0;
+
+}
+
+void color_background(Color p_color) {
 
   switch(p_color) {
 
@@ -79,7 +124,7 @@ void color_background(color p_color) {
 
 }
 
-void color_text(color p_color) {
+void color_text(Color p_color) {
 
   switch(p_color) {
 
@@ -153,6 +198,7 @@ void color_text(color p_color) {
 
 void error(const char *context, const char *format, ...) {
 
+  const char msg_type[8] = {"(Error)\0"};
   va_list arg_list;
 
   // Start the argument list with any arguments after the format string:
@@ -164,12 +210,15 @@ void error(const char *context, const char *format, ...) {
 
   // Print tags:
   color_text(B_RED);
-  printf("[Error]");
+  printf("%s ", msg_type);
   reset_colors();
-  printf(" ");
 
   // Print message contents:
   vprintf(format, arg_list);
+
+  // If a log file exists, write the message contents to it:
+  if(log_file != NULL)
+    log_message(log_file, time_fmt, context, msg_type, format, arg_list);
 
   // Free allocated memory:
   va_end(arg_list);
@@ -178,6 +227,7 @@ void error(const char *context, const char *format, ...) {
 
 void info(const char *context, const char *format, ...) {
 
+  const char msg_type[7] = {"(Info)\0"};
   va_list arg_list;
 
   // Start the argument list with any arguments after the format string:
@@ -189,15 +239,28 @@ void info(const char *context, const char *format, ...) {
 
   // Print tags:
   color_text(B_BLU);
-  printf("[Info]");
+  printf("%s ", msg_type);
   reset_colors();
-  printf(" ");
 
   // Print message contents:
   vprintf(format, arg_list);
 
+  // If a log file exists, write the message contents to it:
+  if(log_file != NULL)
+    log_message(log_file, time_fmt, context, msg_type, format, arg_list);
+
   // Free allocated memory:
   va_end(arg_list);
+
+}
+
+void logger_module_clean_up() {
+
+  // Clean up the log file:
+  if(log_file != NULL) {
+    fclose(log_file);
+    log_file = NULL;
+  }
 
 }
 
@@ -215,6 +278,10 @@ void message(const char *context, const char *format, ...) {
   // Print message contents:
   vprintf(format, arg_list);
 
+  // If a log file exists, write the message contents to it:
+  if(log_file != NULL)
+    log_message(log_file, time_fmt, context, NULL, format, arg_list);
+
   // Free allocated memory:
   va_end(arg_list);
 
@@ -226,6 +293,7 @@ void reset_colors() {
 
 void success(const char *context, const char *format, ...) {
 
+  const char msg_type[10] = {"(Success)\0"};
   va_list arg_list;
 
   // Start the argument list with any arguments after the format string:
@@ -237,12 +305,15 @@ void success(const char *context, const char *format, ...) {
 
   // Print tags:
   color_text(B_GRN);
-  printf("[Success]");
+  printf("%s ", msg_type);
   reset_colors();
-  printf(" ");
 
   // Print message contents:
   vprintf(format, arg_list);
+
+  // If a log file exists, write the message contents to it:
+  if(log_file != NULL)
+    log_message(log_file, time_fmt, context, msg_type, format, arg_list);
 
   // Free allocated memory:
   va_end(arg_list);
@@ -251,6 +322,7 @@ void success(const char *context, const char *format, ...) {
 
 void warning(const char *context, const char *format, ...) {
 
+  const char msg_type[10] = {"(Warning)\0"};
   va_list arg_list;
 
   // Start the argument list with any arguments after the format string:
@@ -262,12 +334,15 @@ void warning(const char *context, const char *format, ...) {
 
   // Print tags:
   color_text(B_YEL);
-  printf("[Warning]");
+  printf("%s ", msg_type);
   reset_colors();
-  printf(" ");
 
   // Print message contents:
   vprintf(format, arg_list);
+
+  // If a log file exists, write the message contents to it:
+  if(log_file != NULL)
+    log_message(log_file, time_fmt, context, msg_type, format, arg_list);
 
   // Free allocated memory:
   va_end(arg_list);
@@ -275,7 +350,57 @@ void warning(const char *context, const char *format, ...) {
 }
 
 // Private function implementations:
-void print_context(const char *context) {
+static void log_message(FILE* log_file,
+                        const char* date_time_format,
+                        const char* msg_context,
+                        const char* msg_type,
+                        const char* msg_format,
+                        va_list msg_args) {
+
+  // This check is a little of an overkill... but better safe than sorry!
+  if(log_file != NULL) {
+
+    // Log the date and time according to the format specified by the user:
+    log_datetime(log_file, date_time_format);
+
+    // Log the message context:
+    if(msg_context != NULL)
+      fprintf(log_file, "%s: ", msg_context);
+
+    // Log the message type:
+    if(msg_type != NULL)
+      fprintf(log_file, "%s ", msg_type);
+
+    // And finally, log the message contents:
+    vfprintf(log_file, msg_format, msg_args);
+
+  }
+}
+
+static void log_datetime(FILE* log_file, const char* str_format) {
+
+  char time_string[40];
+  struct tm *time_info;
+  time_t raw_time;
+
+  // Ok, THIS check is an overkill! But better safe than sorry!
+  if(log_file != NULL) {
+
+    // Get time and date info:
+    time(&raw_time);
+    time_info = localtime(&raw_time);
+
+    // Format it into a string:
+    strftime(time_string, 40, str_format, time_info);
+
+    // Log the string to a file:
+    fprintf(log_file, "[%s] ", time_string);
+
+  }
+
+}
+
+static void print_context(const char *context) {
   color_text(B_WHT);
   printf("%s: ", context);
   reset_colors();
