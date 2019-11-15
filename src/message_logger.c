@@ -4,7 +4,7 @@
 #include "message_logger.h"
 
 // Private variables:
-char time_fmt[40] = {"%H:%M:%S %d-%m-%Y"};
+char time_fmt[40] = "%H:%M:%S %d-%m-%Y";
 FILE *log_file = NULL;
 
 // Private function headers:
@@ -198,7 +198,7 @@ void color_text(Color p_color) {
 
 void error(const char *context, const char *format, ...) {
 
-  const char msg_type[8] = {"(Error)\0"};
+  const char msg_type[8] = "(Error)";
   va_list arg_list;
 
   // Start the argument list with any arguments after the format string:
@@ -227,7 +227,7 @@ void error(const char *context, const char *format, ...) {
 
 void info(const char *context, const char *format, ...) {
 
-  const char msg_type[7] = {"(Info)\0"};
+  const char msg_type[7] = "(Info)";
   va_list arg_list;
 
   // Start the argument list with any arguments after the format string:
@@ -293,7 +293,7 @@ void reset_colors() {
 
 void success(const char *context, const char *format, ...) {
 
-  const char msg_type[10] = {"(Success)\0"};
+  const char msg_type[10] = "(Success)";
   va_list arg_list;
 
   // Start the argument list with any arguments after the format string:
@@ -322,7 +322,7 @@ void success(const char *context, const char *format, ...) {
 
 void warning(const char *context, const char *format, ...) {
 
-  const char msg_type[10] = {"(Warning)\0"};
+  const char msg_type[10] = "(Warning)";
   va_list arg_list;
 
   // Start the argument list with any arguments after the format string:
