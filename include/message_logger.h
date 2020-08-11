@@ -8,7 +8,11 @@
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <time.h>
+
+// Macros:
+#define TIME_FMT_SIZE 50
 
 // Enums:
 typedef enum {
@@ -37,6 +41,7 @@ typedef enum {
 
 // Public function headers:
 int configure_log_file(const char*, LogFileMode);
+int set_time_format(const char*);
 void color_background(Color);
 void color_text(Color);
 void error(const char*, const char*, ...);

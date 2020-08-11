@@ -53,6 +53,18 @@ int main() {
 
   printf("\n");
 
+  // Changing the time format of log messages:
+  printf("Changing the time format in the log file: \n");
+
+  configure_log_file("logger-test.log", APPEND);
+
+  if(set_time_format("New format: %c") == 0)
+    success("New time format", "Look at the log file time!\n");
+
+  logger_module_clean_up();
+
+  printf("\n");
+
   return 0;
 
 }
