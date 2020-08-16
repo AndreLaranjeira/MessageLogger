@@ -52,6 +52,20 @@ int configure_log_file(const char *file_name , LogFileMode file_mode) {
 
 }
 
+int get_time_format(TimeFormat *destination_time_format) {
+
+  if(destination_time_format == NULL) {
+    error("Logger module",
+          "Cannot store time format in NULL pointer. Please use a valid reference.\n");
+    return -1;
+  }
+
+  strcpy(destination_time_format->string_representation, time_fmt);
+
+  return 0;
+
+}
+
 int set_time_format(const char *new_format) {
 
   if(strlen(new_format) <= TIME_FMT_SIZE)
