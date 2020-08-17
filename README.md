@@ -5,7 +5,8 @@ A simple message logger for the C programming language with different message ty
 
 ## Features
 - [x] Five different types of messages with context fields: message, success, warning, error and info.
-- [ ] Thread-safe message logging.
+- [X] Optional configuration to store logged messages in a separate file.
+  - [X] Configurable time format for messages. 
 - [X] Public functions to color the text and the background, giving the programmer greater flexibility.
 
 ## Sample file

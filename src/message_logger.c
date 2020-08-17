@@ -4,7 +4,7 @@
 #include "message_logger.h"
 
 // Private variables:
-char time_fmt[40] = "%H:%M:%S %d-%m-%Y";
+char time_fmt[TIME_FMT_SIZE] = "%H:%M:%S %d-%m-%Y";
 FILE *log_file = NULL;
 
 // Private function headers:
@@ -30,7 +30,7 @@ int configure_log_file(const char *file_name , LogFileMode file_mode) {
 
       if(log_file == NULL) {
         warning("Logger module",
-                "Could not find log file! Defaulting to write mode!");
+                "Could not find log file! Defaulting to write mode!\n");
         log_file = fopen(file_name, "w");
       }
 
@@ -44,9 +44,38 @@ int configure_log_file(const char *file_name , LogFileMode file_mode) {
 
   if(log_file == NULL) {
     error("Logger module",
-          "Could not create log file! Please check your system.");
+          "Could not create log file! Please check your system.\n");
     return -1;
   }
+
+  return 0;
+
+}
+
+int get_time_format(TimeFormat *destination_time_format) {
+
+  if(destination_time_format == NULL) {
+    error("Logger module",
+          "Cannot store time format in NULL pointer. Please use a valid reference.\n");
+    return -1;
+  }
+
+  strncpy(destination_time_format->string_representation, time_fmt, TIME_FMT_SIZE);
+
+  return 0;
+
+}
+
+int set_time_format(const char *new_format) {
+
+  if(strlen(new_format) > TIME_FMT_SIZE) {
+    error("Logger module",
+          "Could not change time format! Try again with an argument of less "
+          "then %u characters.\n", TIME_FMT_SIZE);
+    return -1;
+  }
+
+  strncpy(time_fmt, new_format, TIME_FMT_SIZE);
 
   return 0;
 
