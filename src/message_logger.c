@@ -60,7 +60,7 @@ int get_time_format(TimeFormat *destination_time_format) {
     return -1;
   }
 
-  strcpy(destination_time_format->string_representation, time_fmt);
+  strncpy(destination_time_format->string_representation, time_fmt, TIME_FMT_SIZE);
 
   return 0;
 
@@ -68,15 +68,14 @@ int get_time_format(TimeFormat *destination_time_format) {
 
 int set_time_format(const char *new_format) {
 
-  if(strlen(new_format) <= TIME_FMT_SIZE)
-    strncpy(time_fmt, new_format, TIME_FMT_SIZE);
-
-  else {
+  if(strlen(new_format) > TIME_FMT_SIZE) {
     error("Logger module",
           "Could not change time format! Try again with an argument of less "
           "then %u characters.\n", TIME_FMT_SIZE);
     return -1;
   }
+
+  strncpy(time_fmt, new_format, TIME_FMT_SIZE);
 
   return 0;
 
