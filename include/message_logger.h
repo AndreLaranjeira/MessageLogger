@@ -5,6 +5,7 @@
 #define MESSAGE_LOGGER_H_
 
 // Includes:
+#include <pthread.h>
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -37,6 +38,7 @@ typedef enum {
 
 // Public function headers:
 int configure_log_file(const char*, LogFileMode);
+int enable_thread_safety();
 void color_background(Color);
 void color_text(Color);
 void error(const char*, const char*, ...);

@@ -6,6 +6,7 @@
 // Private variables:
 char time_fmt[40] = "%H:%M:%S %d-%m-%Y";
 FILE *log_file = NULL;
+pthread_mutex_t *logger_recursive_mutex = NULL;
 
 // Private function headers:
 static void log_message(FILE*, const char*, const char*, const char*,
@@ -43,8 +44,10 @@ int configure_log_file(const char *file_name , LogFileMode file_mode) {
   }
 
   if(log_file == NULL) {
-    error("Logger module",
-          "Could not create log file! Please check your system.");
+    error(
+      "Logger module",
+      "Could not create log file! Please check your system."
+    );
     return -1;
   }
 
@@ -52,7 +55,35 @@ int configure_log_file(const char *file_name , LogFileMode file_mode) {
 
 }
 
+int enable_thread_safety() {
+
+  pthread_mutexattr_t logger_mutex_attributes;
+
+  // Allocate recursive mutex:
+  logger_recursive_mutex = malloc(sizeof(pthread_mutex_t));
+
+  if(logger_recursive_mutex == NULL) {
+    error(
+      "Logger module",
+      "Could not allocate memory for mutex lock! Please check your system."
+    );
+    return -1;
+  }
+
+  // Initialize recursive mutex:
+  pthread_mutexattr_init(&logger_mutex_attributes);
+  pthread_mutexattr_settype(&logger_mutex_attributes, PTHREAD_MUTEX_RECURSIVE);
+  pthread_mutex_init(logger_recursive_mutex, &logger_mutex_attributes);
+  pthread_mutexattr_destroy(&logger_mutex_attributes);
+
+  return 0;
+}
+
 void color_background(Color p_color) {
+
+  // Acquire logger recursive lock if thread safety is enabled:
+  if(logger_recursive_mutex != NULL)
+    pthread_mutex_lock(logger_recursive_mutex);
 
   switch(p_color) {
 
@@ -122,9 +153,17 @@ void color_background(Color p_color) {
 
   }
 
+  // Release logger recursive lock if thread safety is enabled:
+  if(logger_recursive_mutex != NULL)
+    pthread_mutex_unlock(logger_recursive_mutex);
+
 }
 
 void color_text(Color p_color) {
+
+  // Acquire logger recursive lock if thread safety is enabled:
+  if(logger_recursive_mutex != NULL)
+    pthread_mutex_lock(logger_recursive_mutex);
 
   switch(p_color) {
 
@@ -194,6 +233,10 @@ void color_text(Color p_color) {
 
   }
 
+  // Release logger recursive lock if thread safety is enabled:
+  if(logger_recursive_mutex != NULL)
+    pthread_mutex_unlock(logger_recursive_mutex);
+
 }
 
 void error(const char *context, const char *format, ...) {
@@ -203,6 +246,10 @@ void error(const char *context, const char *format, ...) {
 
   // Start the argument list with any arguments after the format string:
   va_start(arg_list, format);
+
+  // Acquire logger recursive lock if thread safety is enabled:
+  if(logger_recursive_mutex != NULL)
+    pthread_mutex_lock(logger_recursive_mutex);
 
   // Print context:
   if(context != NULL)
@@ -220,7 +267,11 @@ void error(const char *context, const char *format, ...) {
   if(log_file != NULL)
     log_message(log_file, time_fmt, context, msg_type, format, arg_list);
 
-  // Free allocated memory:
+  // Release logger recursive lock if thread safety is enabled:
+  if(logger_recursive_mutex != NULL)
+    pthread_mutex_unlock(logger_recursive_mutex);
+
+  // Free allocated resources:
   va_end(arg_list);
 
 }
@@ -232,6 +283,10 @@ void info(const char *context, const char *format, ...) {
 
   // Start the argument list with any arguments after the format string:
   va_start(arg_list, format);
+
+  // Acquire logger recursive lock if thread safety is enabled:
+  if(logger_recursive_mutex != NULL)
+    pthread_mutex_lock(logger_recursive_mutex);
 
   // Print context:
   if(context != NULL)
@@ -249,7 +304,11 @@ void info(const char *context, const char *format, ...) {
   if(log_file != NULL)
     log_message(log_file, time_fmt, context, msg_type, format, arg_list);
 
-  // Free allocated memory:
+  // Release logger recursive lock if thread safety is enabled:
+  if(logger_recursive_mutex != NULL)
+    pthread_mutex_unlock(logger_recursive_mutex);
+
+  // Free allocated resources:
   va_end(arg_list);
 
 }
@@ -262,6 +321,13 @@ void logger_module_clean_up() {
     log_file = NULL;
   }
 
+  // Clean up the recursive mutex:
+  if(logger_recursive_mutex != NULL) {
+    pthread_mutex_destroy(logger_recursive_mutex);
+    free(logger_recursive_mutex);
+    logger_recursive_mutex = NULL;
+  }
+
 }
 
 void message(const char *context, const char *format, ...) {
@@ -270,6 +336,10 @@ void message(const char *context, const char *format, ...) {
 
   // Start the argument list with any arguments after the format string:
   va_start(arg_list, format);
+
+  // Acquire logger recursive lock if thread safety is enabled:
+  if(logger_recursive_mutex != NULL)
+    pthread_mutex_lock(logger_recursive_mutex);
 
   // Print context:
   if(context != NULL)
@@ -282,13 +352,26 @@ void message(const char *context, const char *format, ...) {
   if(log_file != NULL)
     log_message(log_file, time_fmt, context, NULL, format, arg_list);
 
-  // Free allocated memory:
+  // Release logger recursive lock if thread safety is enabled:
+  if(logger_recursive_mutex != NULL)
+    pthread_mutex_unlock(logger_recursive_mutex);
+
+  // Free allocated resources:
   va_end(arg_list);
 
 }
 
 void reset_colors() {
+  // Acquire logger recursive lock if thread safety is enabled:
+  if(logger_recursive_mutex != NULL)
+    pthread_mutex_lock(logger_recursive_mutex);
+
+  // Reset text and background colors:
   printf("\x1B[0m");
+
+  // Release logger recursive lock if thread safety is enabled:
+  if(logger_recursive_mutex != NULL)
+    pthread_mutex_unlock(logger_recursive_mutex);
 }
 
 void success(const char *context, const char *format, ...) {
@@ -298,6 +381,10 @@ void success(const char *context, const char *format, ...) {
 
   // Start the argument list with any arguments after the format string:
   va_start(arg_list, format);
+
+  // Acquire logger recursive lock if thread safety is enabled:
+  if(logger_recursive_mutex != NULL)
+    pthread_mutex_lock(logger_recursive_mutex);
 
   // Print context:
   if(context != NULL)
@@ -315,7 +402,11 @@ void success(const char *context, const char *format, ...) {
   if(log_file != NULL)
     log_message(log_file, time_fmt, context, msg_type, format, arg_list);
 
-  // Free allocated memory:
+  // Release logger recursive lock if thread safety is enabled:
+  if(logger_recursive_mutex != NULL)
+    pthread_mutex_unlock(logger_recursive_mutex);
+
+  // Free allocated resources:
   va_end(arg_list);
 
 }
@@ -327,6 +418,10 @@ void warning(const char *context, const char *format, ...) {
 
   // Start the argument list with any arguments after the format string:
   va_start(arg_list, format);
+
+  // Acquire logger recursive lock if thread safety is enabled:
+  if(logger_recursive_mutex != NULL)
+    pthread_mutex_lock(logger_recursive_mutex);
 
   // Print context:
   if(context != NULL)
@@ -344,7 +439,11 @@ void warning(const char *context, const char *format, ...) {
   if(log_file != NULL)
     log_message(log_file, time_fmt, context, msg_type, format, arg_list);
 
-  // Free allocated memory:
+  // Release logger recursive lock if thread safety is enabled:
+  if(logger_recursive_mutex != NULL)
+    pthread_mutex_unlock(logger_recursive_mutex);
+
+  // Free allocated resources:
   va_end(arg_list);
 
 }
