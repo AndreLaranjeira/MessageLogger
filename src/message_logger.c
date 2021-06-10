@@ -23,6 +23,10 @@ static void print_formatted_text(const char*, va_list);
 // Public function implementations:
 int configure_log_file(const char *file_name , LogFileMode file_mode) {
 
+  // Acquire logger recursive lock if thread safety is enabled:
+  if(logger_recursive_mutex != NULL)
+    pthread_mutex_lock(logger_recursive_mutex);
+
   // If there was a previous log file, we need to close it:
   if(log_file != NULL) {
     fclose(log_file);
@@ -50,6 +54,10 @@ int configure_log_file(const char *file_name , LogFileMode file_mode) {
       break;
 
   }
+
+  // Release logger recursive lock if thread safety is enabled:
+  if(logger_recursive_mutex != NULL)
+    pthread_mutex_unlock(logger_recursive_mutex);
 
   if(log_file == NULL) {
     error(
@@ -99,17 +107,35 @@ int get_time_format(TimeFormat *destination_time_format) {
     return -1;
   }
 
+  // Acquire logger recursive lock if thread safety is enabled:
+  if(logger_recursive_mutex != NULL)
+    pthread_mutex_lock(logger_recursive_mutex);
+
+  // Copy logger time format to destination time format:
   strncpy(
     destination_time_format->string_representation,
     time_fmt,
     TIME_FMT_SIZE
   );
 
+  // Release logger recursive lock if thread safety is enabled:
+  if(logger_recursive_mutex != NULL)
+    pthread_mutex_unlock(logger_recursive_mutex);
+
   return 0;
 
 }
 
 int set_time_format(const char *new_format) {
+
+  if(new_format == NULL) {
+    error(
+      "Logger module",
+      "Cannot set time format to a NULL pointer. "
+      "Please use a valid reference.\n"
+    );
+    return -1;
+  }
 
   if(strlen(new_format) > TIME_FMT_SIZE) {
     error(
@@ -121,7 +147,16 @@ int set_time_format(const char *new_format) {
     return -1;
   }
 
+  // Acquire logger recursive lock if thread safety is enabled:
+  if(logger_recursive_mutex != NULL)
+    pthread_mutex_lock(logger_recursive_mutex);
+
+  // Copy new time format to logger time format:
   strncpy(time_fmt, new_format, TIME_FMT_SIZE);
+
+  // Release logger recursive lock if thread safety is enabled:
+  if(logger_recursive_mutex != NULL)
+    pthread_mutex_unlock(logger_recursive_mutex);
 
   return 0;
 
