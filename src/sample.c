@@ -1,15 +1,24 @@
 // Test program for MessageLogger module.
 
 // Includes:
+#include <pthread.h>
 #include <stdio.h>
 #include <stdlib.h>
 
 #include "message_logger.h"
 
+// Macros:
+#define THREAD_NUM 4
+
+// Auxiliary function headers:
+void* thread_example(void*);
+
 // Main function:
 int main() {
 
-  // Variable declaration.
+  // Variable declaration:
+  int i, thread_args[THREAD_NUM];
+  pthread_t thread_ids[THREAD_NUM];
   TimeFormat my_time_format;
 
   // Basic functionality:
@@ -52,7 +61,24 @@ int main() {
 
   success("New context", "Appended successfully.\n");
 
-  logger_module_clean_up();
+  printf("\n");
+
+  // Using multiple threads:
+  printf("Using multiple threads: \n");
+
+  enable_thread_safety();
+
+  // Create threads:
+  for (i = 0; i < THREAD_NUM; i++) {
+    thread_args[i] = i + 1;
+    pthread_create(&thread_ids[i], NULL, thread_example, &thread_args[i]);
+  }
+
+  // Join threads:
+  for (i = 0; i < THREAD_NUM; i++) {
+    pthread_join(thread_ids[i], NULL);
+    success("Main", "Thread %d finished!\n", i+1);
+  }
 
   printf("\n");
 
@@ -73,10 +99,82 @@ int main() {
   if(set_time_format("New format: %c") == 0)
     success("New time format", "Look at the log file time!\n");
 
-  logger_module_clean_up();
-
   printf("\n");
+
+  // Clean up:
+  logger_module_clean_up();
 
   return 0;
 
+}
+
+// Auxiliary functions:
+void* thread_example (void *args) {
+
+  // Variable declaration:
+  char thread_context[20];
+  int i, thread_id;
+
+  // Configure thread context:
+  thread_id = *((int*) args);
+  sprintf(thread_context, "Thread %d", thread_id);
+
+  // Log a lot of messages with different functions:
+  for (i = 0; i < 6; i++) {
+
+    switch (i % 6) {
+      case 0:
+        message(
+          thread_context,
+          "Message number %d!\n",
+          i+1
+        );
+        break;
+
+      case 1:
+        error(
+          thread_context,
+          "Message number %d!\n",
+          i+1
+        );
+        break;
+
+      case 2:
+        info(
+          thread_context,
+          "Message number %d!\n",
+          i+1
+        );
+        break;
+
+      case 3:
+        success(
+          thread_context,
+          "Message number %d!\n",
+          i+1
+        );
+        break;
+
+      case 4:
+        warning(
+          thread_context,
+          "Message number %d!\n",
+          i+1
+        );
+        break;
+
+      case 5:
+        lock_logger_recursive_mutex();
+        color_text(B_BLU);
+        color_background(B_GRN);
+        printf("%s: Message number %d!\n", thread_context, i+1);
+        reset_colors();
+        unlock_logger_recursive_mutex();
+        break;
+    }
+
+  }
+
+  // Finish execution:
+  pthread_exit((void *) 0);
 }

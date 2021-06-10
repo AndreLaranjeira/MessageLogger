@@ -5,7 +5,7 @@ EXE = msg-logger-sample
 CC = gcc
 EXT = .c
 CFLAGS = -Wall -g -I $(IDIR)
-LIBS = -lm
+LIBS = -lm -lpthread
 
 # Project paths:
 IDIR = include
