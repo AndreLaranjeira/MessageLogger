@@ -8,7 +8,7 @@
 #include "message_logger.h"
 
 // Macros:
-#define THREAD_NUM 2
+#define THREAD_NUM 4
 
 // Auxiliary function headers:
 void* thread_example(void*);
@@ -62,8 +62,8 @@ int main() {
 
   printf("\n");
 
-  // Enabling thread safety:
-  printf("Enabling thread safety: \n");
+  // Using multiple threads:
+  printf("Using multiple threads: \n");
 
   enable_thread_safety();
 
@@ -101,7 +101,7 @@ void* thread_example (void *args) {
   sprintf(thread_context, "Thread %d", thread_id);
 
   // Log a lot of messages with different functions:
-  for (i = 0; i < 18; i++) {
+  for (i = 0; i < 6; i++) {
 
     switch (i % 6) {
       case 0:
