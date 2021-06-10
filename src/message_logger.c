@@ -36,8 +36,10 @@ int configure_log_file(const char *file_name , LogFileMode file_mode) {
       log_file = fopen(file_name, "a");
 
       if(log_file == NULL) {
-        warning("Logger module",
-                "Could not find log file! Defaulting to write mode!\n");
+        warning(
+          "Logger module",
+          "Could not find log file! Defaulting to write mode!\n"
+        );
         log_file = fopen(file_name, "w");
       }
 
@@ -50,8 +52,10 @@ int configure_log_file(const char *file_name , LogFileMode file_mode) {
   }
 
   if(log_file == NULL) {
-    error("Logger module",
-          "Could not create log file! Please check your system.\n");
+    error(
+      "Logger module",
+      "Could not create log file! Please check your system.\n"
+    );
     return -1;
   }
 
@@ -87,12 +91,19 @@ int enable_thread_safety() {
 int get_time_format(TimeFormat *destination_time_format) {
 
   if(destination_time_format == NULL) {
-    error("Logger module",
-          "Cannot store time format in NULL pointer. Please use a valid reference.\n");
+    error(
+      "Logger module",
+      "Cannot store time format in NULL pointer. "
+      "Please use a valid reference.\n"
+    );
     return -1;
   }
 
-  strncpy(destination_time_format->string_representation, time_fmt, TIME_FMT_SIZE);
+  strncpy(
+    destination_time_format->string_representation,
+    time_fmt,
+    TIME_FMT_SIZE
+  );
 
   return 0;
 
@@ -101,9 +112,12 @@ int get_time_format(TimeFormat *destination_time_format) {
 int set_time_format(const char *new_format) {
 
   if(strlen(new_format) > TIME_FMT_SIZE) {
-    error("Logger module",
-          "Could not change time format! Try again with an argument of less "
-          "then %u characters.\n", TIME_FMT_SIZE);
+    error(
+      "Logger module",
+      "Could not change time format! Try again with an argument of less "
+      "then %u characters.\n",
+      TIME_FMT_SIZE
+    );
     return -1;
   }
 

@@ -63,6 +63,25 @@ int main() {
 
   printf("\n");
 
+  // Using multiple threads:
+  printf("Using multiple threads: \n");
+
+  enable_thread_safety();
+
+  // Create threads:
+  for (i = 0; i < THREAD_NUM; i++) {
+    thread_args[i] = i + 1;
+    pthread_create(&thread_ids[i], NULL, thread_example, &thread_args[i]);
+  }
+
+  // Join threads:
+  for (i = 0; i < THREAD_NUM; i++) {
+    pthread_join(thread_ids[i], NULL);
+    success("Main", "Thread %d finished!\n", i+1);
+  }
+
+  printf("\n");
+
   // Getting the current time format:
   printf("Getting the current time format: \n");
 
@@ -82,27 +101,8 @@ int main() {
 
   printf("\n");
 
-  // Using multiple threads:
-  printf("Using multiple threads: \n");
-
-  enable_thread_safety();
-
-  // Create threads:
-  for (i = 0; i < THREAD_NUM; i++) {
-    thread_args[i] = i + 1;
-    pthread_create(&thread_ids[i], NULL, thread_example, &thread_args[i]);
-  }
-
-  // Join threads:
-  for (i = 0; i < THREAD_NUM; i++) {
-    pthread_join(thread_ids[i], NULL);
-    success("Main", "Thread %d finished!\n", i+1);
-  }
-
   // Clean up:
   logger_module_clean_up();
-
-  printf("\n");
 
   return 0;
 
