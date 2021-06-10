@@ -19,6 +19,7 @@ int main() {
   // Variable declaration:
   int i, thread_args[THREAD_NUM];
   pthread_t thread_ids[THREAD_NUM];
+  TimeFormat my_time_format;
 
   // Basic functionality:
   printf("Basic message types: \n");
@@ -62,6 +63,25 @@ int main() {
 
   printf("\n");
 
+  // Getting the current time format:
+  printf("Getting the current time format: \n");
+
+  get_time_format(&my_time_format);
+
+  printf("Current time format: %s\n", my_time_format.string_representation);
+
+  printf("\n");
+
+  // Changing the time format of log messages:
+  printf("Changing the time format in the log file: \n");
+
+  configure_log_file("logger-test.log", APPEND);
+
+  if(set_time_format("New format: %c") == 0)
+    success("New time format", "Look at the log file time!\n");
+
+  printf("\n");
+
   // Using multiple threads:
   printf("Using multiple threads: \n");
 
@@ -78,7 +98,6 @@ int main() {
     pthread_join(thread_ids[i], NULL);
     success("Main", "Thread %d finished!\n", i+1);
   }
-
 
   // Clean up:
   logger_module_clean_up();
