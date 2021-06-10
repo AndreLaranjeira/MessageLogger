@@ -593,8 +593,8 @@ static void apply_default_text_color() {
 
 static void clear_background_in_current_line() {
   // When bash creates a new line, it colors the background of the entire new
-  // line automatically. The following printf clear any existing background on
-  // the current line.
+  // line automatically. The following printf clears any existing background
+  // on the current line.
   printf("\x1B[K");
 }
 
