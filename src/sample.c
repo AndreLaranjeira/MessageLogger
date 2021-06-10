@@ -101,9 +101,9 @@ void* thread_example (void *args) {
   sprintf(thread_context, "Thread %d", thread_id);
 
   // Log a lot of messages with different functions:
-  for (i = 0; i < 15; i++) {
+  for (i = 0; i < 18; i++) {
 
-    switch (i % 5) {
+    switch (i % 6) {
       case 0:
         message(
           thread_context,
@@ -142,6 +142,15 @@ void* thread_example (void *args) {
           "Message number %d!\n",
           i+1
         );
+        break;
+
+      case 5:
+        lock_logger_recursive_mutex();
+        color_text(B_BLU);
+        color_background(B_GRN);
+        printf("%s: Message number %d!\n", thread_context, i+1);
+        reset_colors();
+        unlock_logger_recursive_mutex();
         break;
     }
 

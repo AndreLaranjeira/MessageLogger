@@ -319,6 +319,17 @@ void info(const char *context, const char *format, ...) {
 
 }
 
+void lock_logger_recursive_mutex() {
+  if(logger_recursive_mutex != NULL)
+    pthread_mutex_lock(logger_recursive_mutex);
+
+  else
+    warning(
+      "Logger module",
+      "Enable thread safety to access the logger recursive mutex."
+    );
+}
+
 void logger_module_clean_up() {
 
   // Clean up the log file:
@@ -440,6 +451,17 @@ void success(const char *context, const char *format, ...) {
   // Free allocated resources:
   va_end(arg_list);
 
+}
+
+void unlock_logger_recursive_mutex() {
+  if(logger_recursive_mutex != NULL)
+    pthread_mutex_unlock(logger_recursive_mutex);
+
+  else
+    warning(
+      "Logger module",
+      "Enable thread safety to access the logger recursive mutex."
+    );
 }
 
 void warning(const char *context, const char *format, ...) {

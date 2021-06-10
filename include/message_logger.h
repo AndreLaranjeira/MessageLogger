@@ -43,12 +43,14 @@ void color_background(Color);
 void color_text(Color);
 void error(const char*, const char*, ...);
 void info(const char*, const char*, ...);
+void lock_logger_recursive_mutex();
 void logger_module_clean_up();
 void message(const char*, const char*, ...);
 void reset_background_color();
 void reset_colors();
 void reset_text_color();
 void success(const char*, const char*, ...);
+void unlock_logger_recursive_mutex();
 void warning(const char*, const char*, ...);
 
 #endif // MESSAGE_LOGGER_H_
