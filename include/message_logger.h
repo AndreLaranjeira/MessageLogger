@@ -45,7 +45,9 @@ void error(const char*, const char*, ...);
 void info(const char*, const char*, ...);
 void logger_module_clean_up();
 void message(const char*, const char*, ...);
+void reset_background_color();
 void reset_colors();
+void reset_text_color();
 void success(const char*, const char*, ...);
 void warning(const char*, const char*, ...);
 

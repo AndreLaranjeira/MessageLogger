@@ -9,6 +9,10 @@ FILE *log_file = NULL;
 pthread_mutex_t *logger_recursive_mutex = NULL;
 
 // Private function headers:
+static void apply_all_default_attributes();
+static void apply_default_background_color();
+static void apply_default_text_color();
+static void clear_background_in_current_line();
 static void log_message(FILE*, const char*, const char*, const char*,
                         const char*, va_list);
 static void log_datetime(FILE*, const char*);
@@ -361,13 +365,38 @@ void message(const char *context, const char *format, ...) {
 
 }
 
+void reset_background_color() {
+  // Acquire logger recursive lock if thread safety is enabled:
+  if(logger_recursive_mutex != NULL)
+    pthread_mutex_lock(logger_recursive_mutex);
+
+  apply_default_background_color();
+  clear_background_in_current_line();
+
+  // Release logger recursive lock if thread safety is enabled:
+  if(logger_recursive_mutex != NULL)
+    pthread_mutex_unlock(logger_recursive_mutex);
+}
+
 void reset_colors() {
   // Acquire logger recursive lock if thread safety is enabled:
   if(logger_recursive_mutex != NULL)
     pthread_mutex_lock(logger_recursive_mutex);
 
-  // Reset text and background colors:
-  printf("\x1B[0m");
+  apply_all_default_attributes();
+  clear_background_in_current_line();
+
+  // Release logger recursive lock if thread safety is enabled:
+  if(logger_recursive_mutex != NULL)
+    pthread_mutex_unlock(logger_recursive_mutex);
+}
+
+void reset_text_color() {
+  // Acquire logger recursive lock if thread safety is enabled:
+  if(logger_recursive_mutex != NULL)
+    pthread_mutex_lock(logger_recursive_mutex);
+
+  apply_default_text_color();
 
   // Release logger recursive lock if thread safety is enabled:
   if(logger_recursive_mutex != NULL)
@@ -449,6 +478,25 @@ void warning(const char *context, const char *format, ...) {
 }
 
 // Private function implementations:
+static void apply_all_default_attributes() {
+  printf("\x1B[0m");
+}
+
+static void apply_default_background_color() {
+  printf("\x1B[49m");
+}
+
+static void apply_default_text_color() {
+  printf("\x1B[39m");
+}
+
+static void clear_background_in_current_line() {
+  // When bash creates a new line, it colors the background of the entire new
+  // line automatically. The following printf clear any existing background on
+  // the current line.
+  printf("\x1B[K");
+}
+
 static void log_message(FILE* log_file,
                         const char* date_time_format,
                         const char* msg_context,
@@ -501,6 +549,7 @@ static void log_datetime(FILE* log_file, const char* str_format) {
 
 static void print_context(const char *context) {
   color_text(B_WHT);
+  reset_background_color();
   printf("%s: ", context);
   reset_colors();
 }
