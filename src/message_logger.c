@@ -13,10 +13,12 @@ static void apply_all_default_attributes();
 static void apply_default_background_color();
 static void apply_default_text_color();
 static void clear_background_in_current_line();
+static void log_datetime(FILE*, const char*);
+static void log_formatted_text_content(FILE*, const char*, va_list);
 static void log_message(FILE*, const char*, const char*, const char*,
                         const char*, va_list);
-static void log_datetime(FILE*, const char*);
 static void print_context(const char*);
+static void print_formatted_text(const char*, va_list);
 
 // Public function implementations:
 int configure_log_file(const char *file_name , LogFileMode file_mode) {
@@ -265,7 +267,7 @@ void error(const char *context, const char *format, ...) {
   reset_colors();
 
   // Print message contents:
-  vprintf(format, arg_list);
+  print_formatted_text(format, arg_list);
 
   // If a log file exists, write the message contents to it:
   if(log_file != NULL)
@@ -302,7 +304,7 @@ void info(const char *context, const char *format, ...) {
   reset_colors();
 
   // Print message contents:
-  vprintf(format, arg_list);
+  print_formatted_text(format, arg_list);
 
   // If a log file exists, write the message contents to it:
   if(log_file != NULL)
@@ -350,7 +352,7 @@ void message(const char *context, const char *format, ...) {
     print_context(context);
 
   // Print message contents:
-  vprintf(format, arg_list);
+  print_formatted_text(format, arg_list);
 
   // If a log file exists, write the message contents to it:
   if(log_file != NULL)
@@ -425,7 +427,7 @@ void success(const char *context, const char *format, ...) {
   reset_colors();
 
   // Print message contents:
-  vprintf(format, arg_list);
+  print_formatted_text(format, arg_list);
 
   // If a log file exists, write the message contents to it:
   if(log_file != NULL)
@@ -462,7 +464,7 @@ void warning(const char *context, const char *format, ...) {
   reset_colors();
 
   // Print message contents:
-  vprintf(format, arg_list);
+  print_formatted_text(format, arg_list);
 
   // If a log file exists, write the message contents to it:
   if(log_file != NULL)
@@ -497,6 +499,40 @@ static void clear_background_in_current_line() {
   printf("\x1B[K");
 }
 
+static void log_datetime(FILE* log_file, const char* str_format) {
+
+  char time_string[40];
+  struct tm *time_info;
+  time_t raw_time;
+
+  // Get time and date info:
+  time(&raw_time);
+  time_info = localtime(&raw_time);
+
+  // Format it into a string:
+  strftime(time_string, 40, str_format, time_info);
+
+  // Log the string to a file:
+  fprintf(log_file, "[%s] ", time_string);
+
+}
+
+static void log_formatted_text_content(
+  FILE* log_file,
+  const char* text_format,
+  va_list text_args
+) {
+
+  va_list text_args_copy;
+
+  // We need to copy the args va_list because any v*printf() makes the va_list
+  // unusable for future v*printf() calls.
+  va_copy(text_args_copy, text_args);
+  vfprintf(log_file, text_format, text_args_copy);
+  va_end(text_args_copy);
+
+}
+
 static void log_message(FILE* log_file,
                         const char* date_time_format,
                         const char* msg_context,
@@ -518,33 +554,9 @@ static void log_message(FILE* log_file,
     if(msg_type != NULL)
       fprintf(log_file, "%s ", msg_type);
 
-    // And finally, log the message contents:
-    vfprintf(log_file, msg_format, msg_args);
+    log_formatted_text_content(log_file, msg_format, msg_args);
 
   }
-}
-
-static void log_datetime(FILE* log_file, const char* str_format) {
-
-  char time_string[40];
-  struct tm *time_info;
-  time_t raw_time;
-
-  // Ok, THIS check is an overkill! But better safe than sorry!
-  if(log_file != NULL) {
-
-    // Get time and date info:
-    time(&raw_time);
-    time_info = localtime(&raw_time);
-
-    // Format it into a string:
-    strftime(time_string, 40, str_format, time_info);
-
-    // Log the string to a file:
-    fprintf(log_file, "[%s] ", time_string);
-
-  }
-
 }
 
 static void print_context(const char *context) {
@@ -552,4 +564,16 @@ static void print_context(const char *context) {
   reset_background_color();
   printf("%s: ", context);
   reset_colors();
+}
+
+static void print_formatted_text(const char* text_format, va_list text_args) {
+
+  va_list text_args_copy;
+
+  // We need to copy the args va_list because any v*printf() makes the va_list
+  // unusable for future v*printf() calls.
+  va_copy(text_args_copy, text_args);
+  vprintf(text_format, text_args_copy);
+  va_end(text_args_copy);
+
 }
