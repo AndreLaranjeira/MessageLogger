@@ -171,70 +171,72 @@ void color_background(Color p_color) {
   switch(p_color) {
 
     case BLA:
-      printf("\x1B[40m");
+      printf("\x1B[48;5;0m");
       break;
 
     case RED:
-      printf("\x1B[41m");
+      printf("\x1B[48;5;1m");
       break;
 
     case GRN:
-      printf("\x1B[42m");
+      printf("\x1B[48;5;2m");
       break;
 
     case YEL:
-      printf("\x1B[43m");
+      printf("\x1B[48;5;3m");
       break;
 
     case BLU:
-      printf("\x1B[44m");
+      printf("\x1B[48;5;4m");
       break;
 
     case MAG:
-      printf("\x1B[45m");
+      printf("\x1B[48;5;5m");
       break;
 
     case CYN:
-      printf("\x1B[46m");
+      printf("\x1B[48;5;6m");
       break;
 
     case WHT:
-      printf("\x1B[47m");
+      printf("\x1B[48;5;7m");
       break;
 
     case B_BLA:
-      printf("\x1B[1;40m");
+      printf("\x1B[48;5;8m");
       break;
 
     case B_RED:
-      printf("\x1B[1;41m");
+      printf("\x1B[48;5;9m");
       break;
 
     case B_GRN:
-      printf("\x1B[1;42m");
+      printf("\x1B[48;5;10m");
       break;
 
     case B_YEL:
-      printf("\x1B[1;43m");
+      printf("\x1B[48;5;11m");
       break;
 
     case B_BLU:
-      printf("\x1B[1;44m");
+      printf("\x1B[48;5;12m");
       break;
 
     case B_MAG:
-      printf("\x1B[1;45m");
+      printf("\x1B[48;5;13m");
       break;
 
     case B_CYN:
-      printf("\x1B[1;46m");
+      printf("\x1B[48;5;14m");
       break;
 
     case B_WHT:
-      printf("\x1B[1;47m");
+      printf("\x1B[48;5;15m");
       break;
 
   }
+
+  clear_background_in_current_line();
 
   // Release logger recursive lock if thread safety is enabled:
   if(logger_recursive_mutex != NULL)
@@ -251,67 +253,67 @@ void color_text(Color p_color) {
   switch(p_color) {
 
     case BLA:
-      printf("\x1B[30m");
+      printf("\x1B[22;38;5;0m");
       break;
 
     case RED:
-      printf("\x1B[31m");
+      printf("\x1B[22;38;5;1m");
       break;
 
     case GRN:
-      printf("\x1B[32m");
+      printf("\x1B[22;38;5;2m");
       break;
 
     case YEL:
-      printf("\x1B[33m");
+      printf("\x1B[22;38;5;3m");
       break;
 
     case BLU:
-      printf("\x1B[34m");
+      printf("\x1B[22;38;5;4m");
       break;
 
     case MAG:
-      printf("\x1B[35m");
+      printf("\x1B[22;38;5;5m");
       break;
 
     case CYN:
-      printf("\x1B[36m");
+      printf("\x1B[22;38;5;6m");
       break;
 
     case WHT:
-      printf("\x1B[37m");
+      printf("\x1B[22;38;5;7m");
       break;
 
     case B_BLA:
-      printf("\x1B[1;30m");
+      printf("\x1B[1;38;5;8m");
       break;
 
     case B_RED:
-      printf("\x1B[1;31m");
+      printf("\x1B[1;38;5;9m");
       break;
 
     case B_GRN:
-      printf("\x1B[1;32m");
+      printf("\x1B[1;38;5;10m");
       break;
 
     case B_YEL:
-      printf("\x1B[1;33m");
+      printf("\x1B[1;38;5;11m");
       break;
 
     case B_BLU:
-      printf("\x1B[1;34m");
+      printf("\x1B[1;38;5;12m");
       break;
 
     case B_MAG:
-      printf("\x1B[1;35m");
+      printf("\x1B[1;38;5;13m");
       break;
 
     case B_CYN:
-      printf("\x1B[1;36m");
+      printf("\x1B[1;38;5;14m");
       break;
 
     case B_WHT:
-      printf("\x1B[1;37m");
+      printf("\x1B[1;38;5;15m");
       break;
 
   }
