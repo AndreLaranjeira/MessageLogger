@@ -6,13 +6,59 @@
 // Private variables:
 char time_fmt[TIME_FMT_SIZE] = "%H:%M:%S %d-%m-%Y";
 FILE *log_file = NULL;
+LoggerColorPallet logger_color_pallet = {
+  .message_colors = {
+    [DEFAULT_MSG] = {
+      .text_color = DFLT,
+      .background_color = DFLT
+    },
+    [ERROR_MSG] = {
+      .text_color = DFLT,
+      .background_color = DFLT
+    },
+    [INFO_MSG] = {
+      .text_color = DFLT,
+      .background_color = DFLT
+    },
+    [SUCCESS_MSG] = {
+      .text_color = DFLT,
+      .background_color = DFLT
+    },
+    [WARNING_MSG] = {
+      .text_color = DFLT,
+      .background_color = DFLT
+    },
+  },
+
+  .tag_colors = {
+    [CONTEXT_TAG] = {
+      .text_color = B_WHT,
+      .background_color = DFLT
+    },
+    [ERROR_TAG] = {
+      .text_color = B_RED,
+      .background_color = DFLT
+    },
+    [INFO_TAG] = {
+      .text_color = B_BLU,
+      .background_color = DFLT
+    },
+    [SUCCESS_TAG] = {
+      .text_color = B_GRN,
+      .background_color = DFLT
+    },
+    [WARNING_TAG] = {
+      .text_color = B_YEL,
+      .background_color = DFLT
+    }
+  }
+};
 pthread_mutex_t *logger_recursive_mutex = NULL;
 
 // Private function headers:
 static void apply_all_default_attributes();
-static void apply_default_background_color();
-static void apply_default_text_color();
 static void clear_background_in_current_line();
+static void copy_display_colors(DisplayColors*, DisplayColors*);
 static void log_datetime(FILE*, const char*);
 static void log_formatted_text_content(FILE*, const char*, va_list);
 static void log_message(FILE*, const char*, const char*, const char*,
@@ -96,9 +142,71 @@ int enable_thread_safety() {
 
 }
 
-int get_time_format(TimeFormat *destination_time_format) {
+int get_logger_msg_colors(
+  DisplayColors* display_colors_destination,
+  MessageCategory requested_category
+) {
 
-  if(destination_time_format == NULL) {
+  if(display_colors_destination == NULL) {
+    error(
+      "Logger module",
+      "Cannot store display color information in NULL pointer. "
+      "Please use a valid reference.\n"
+    );
+    return -1;
+  }
+
+  // Acquire logger recursive lock if thread safety is enabled:
+  if(logger_recursive_mutex != NULL)
+    pthread_mutex_lock(logger_recursive_mutex);
+
+  copy_display_colors(
+    display_colors_destination,
+    &logger_color_pallet.message_colors[requested_category]
+  );
+
+  // Release logger recursive lock if thread safety is enabled:
+  if(logger_recursive_mutex != NULL)
+    pthread_mutex_unlock(logger_recursive_mutex);
+
+  return 0;
+
+}
+
+int get_logger_tag_colors(
+  DisplayColors* display_colors_destination,
+  TagCategory requested_category
+) {
+
+  if(display_colors_destination == NULL) {
+    error(
+      "Logger module",
+      "Cannot store display color information in NULL pointer. "
+      "Please use a valid reference.\n"
+    );
+    return -1;
+  }
+
+  // Acquire logger recursive lock if thread safety is enabled:
+  if(logger_recursive_mutex != NULL)
+    pthread_mutex_lock(logger_recursive_mutex);
+
+  copy_display_colors(
+    display_colors_destination,
+    &logger_color_pallet.tag_colors[requested_category]
+  );
+
+  // Release logger recursive lock if thread safety is enabled:
+  if(logger_recursive_mutex != NULL)
+    pthread_mutex_unlock(logger_recursive_mutex);
+
+  return 0;
+
+}
+
+int get_time_format(TimeFormat *time_format_destination) {
+
+  if(time_format_destination == NULL) {
     error(
       "Logger module",
       "Cannot store time format in NULL pointer. "
@@ -113,7 +221,7 @@ int get_time_format(TimeFormat *destination_time_format) {
 
   // Copy logger time format to destination time format:
   strncpy(
-    destination_time_format->string_representation,
+    time_format_destination->string_representation,
     time_fmt,
     TIME_FMT_SIZE
   );
@@ -234,6 +342,10 @@ void color_background(Color p_color) {
       printf("\x1B[48;5;15m");
       break;
 
+    case DFLT:
+      printf("\x1B[49m");
+      break;
+
   }
 
   clear_background_in_current_line();
@@ -316,6 +428,10 @@ void color_text(Color p_color) {
       printf("\x1B[1;38;5;15m");
       break;
 
+    case DFLT:
+      printf("\x1B[22;39m");
+      break;
+
   }
 
   // Release logger recursive lock if thread safety is enabled:
@@ -341,11 +457,15 @@ void error(const char *context, const char *format, ...) {
     print_context(context);
 
   // Print tags:
-  color_text(B_RED);
+  color_text(logger_color_pallet.tag_colors[ERROR_TAG].text_color);
+  color_background(logger_color_pallet.tag_colors[ERROR_TAG].background_color);
   printf("%s ", msg_type);
-  reset_colors();
 
   // Print message contents:
+  color_text(logger_color_pallet.message_colors[ERROR_MSG].text_color);
+  color_background(
+    logger_color_pallet.message_colors[ERROR_MSG].background_color
+  );
   print_formatted_text(format, arg_list);
 
   // If a log file exists, write the message contents to it:
@@ -356,8 +476,9 @@ void error(const char *context, const char *format, ...) {
   if(logger_recursive_mutex != NULL)
     pthread_mutex_unlock(logger_recursive_mutex);
 
-  // Free allocated resources:
+  // Free allocated resources and reset colors:
   va_end(arg_list);
+  reset_colors();
 
 }
 
@@ -378,11 +499,15 @@ void info(const char *context, const char *format, ...) {
     print_context(context);
 
   // Print tags:
-  color_text(B_BLU);
+  color_text(logger_color_pallet.tag_colors[INFO_TAG].text_color);
+  color_background(logger_color_pallet.tag_colors[INFO_TAG].background_color);
   printf("%s ", msg_type);
-  reset_colors();
 
   // Print message contents:
+  color_text(logger_color_pallet.message_colors[INFO_MSG].text_color);
+  color_background(
+    logger_color_pallet.message_colors[INFO_MSG].background_color
+  );
   print_formatted_text(format, arg_list);
 
   // If a log file exists, write the message contents to it:
@@ -393,8 +518,9 @@ void info(const char *context, const char *format, ...) {
   if(logger_recursive_mutex != NULL)
     pthread_mutex_unlock(logger_recursive_mutex);
 
-  // Free allocated resources:
+  // Free allocated resources and reset colors:
   va_end(arg_list);
+  reset_colors();
 
 }
 
@@ -442,6 +568,10 @@ void message(const char *context, const char *format, ...) {
     print_context(context);
 
   // Print message contents:
+  color_text(logger_color_pallet.message_colors[DEFAULT_MSG].text_color);
+  color_background(
+    logger_color_pallet.message_colors[DEFAULT_MSG].background_color
+  );
   print_formatted_text(format, arg_list);
 
   // If a log file exists, write the message contents to it:
@@ -452,22 +582,14 @@ void message(const char *context, const char *format, ...) {
   if(logger_recursive_mutex != NULL)
     pthread_mutex_unlock(logger_recursive_mutex);
 
-  // Free allocated resources:
+  // Free allocated resources and reset colors:
   va_end(arg_list);
+  reset_colors();
 
 }
 
 void reset_background_color() {
-  // Acquire logger recursive lock if thread safety is enabled:
-  if(logger_recursive_mutex != NULL)
-    pthread_mutex_lock(logger_recursive_mutex);
-
-  apply_default_background_color();
-  clear_background_in_current_line();
-
-  // Release logger recursive lock if thread safety is enabled:
-  if(logger_recursive_mutex != NULL)
-    pthread_mutex_unlock(logger_recursive_mutex);
+  color_background(DFLT);
 }
 
 void reset_colors() {
@@ -484,15 +606,27 @@ void reset_colors() {
 }
 
 void reset_text_color() {
-  // Acquire logger recursive lock if thread safety is enabled:
-  if(logger_recursive_mutex != NULL)
-    pthread_mutex_lock(logger_recursive_mutex);
+  color_text(DFLT);
+}
 
-  apply_default_text_color();
+void set_logger_msg_colors(
+  MessageCategory message_category,
+  DisplayColors assigned_colors
+) {
+  copy_display_colors(
+    &logger_color_pallet.message_colors[message_category],
+    &assigned_colors
+  );
+}
 
-  // Release logger recursive lock if thread safety is enabled:
-  if(logger_recursive_mutex != NULL)
-    pthread_mutex_unlock(logger_recursive_mutex);
+void set_logger_tag_colors(
+  TagCategory tag_category,
+  DisplayColors assigned_colors
+) {
+  copy_display_colors(
+    &logger_color_pallet.tag_colors[tag_category],
+    &assigned_colors
+  );
 }
 
 void success(const char *context, const char *format, ...) {
@@ -512,11 +646,17 @@ void success(const char *context, const char *format, ...) {
     print_context(context);
 
   // Print tags:
-  color_text(B_GRN);
+  color_text(logger_color_pallet.tag_colors[SUCCESS_TAG].text_color);
+  color_background(
+    logger_color_pallet.tag_colors[SUCCESS_TAG].background_color
+  );
   printf("%s ", msg_type);
-  reset_colors();
 
   // Print message contents:
+  color_text(logger_color_pallet.message_colors[SUCCESS_MSG].text_color);
+  color_background(
+    logger_color_pallet.message_colors[SUCCESS_MSG].background_color
+  );
   print_formatted_text(format, arg_list);
 
   // If a log file exists, write the message contents to it:
@@ -527,8 +667,9 @@ void success(const char *context, const char *format, ...) {
   if(logger_recursive_mutex != NULL)
     pthread_mutex_unlock(logger_recursive_mutex);
 
-  // Free allocated resources:
+  // Free allocated resources and reset colors:
   va_end(arg_list);
+  reset_colors();
 
 }
 
@@ -560,11 +701,17 @@ void warning(const char *context, const char *format, ...) {
     print_context(context);
 
   // Print tags:
-  color_text(B_YEL);
+  color_text(logger_color_pallet.tag_colors[WARNING_TAG].text_color);
+  color_background(
+    logger_color_pallet.tag_colors[WARNING_TAG].background_color
+  );
   printf("%s ", msg_type);
-  reset_colors();
 
   // Print message contents:
+  color_text(logger_color_pallet.message_colors[WARNING_MSG].text_color);
+  color_background(
+    logger_color_pallet.message_colors[WARNING_MSG].background_color
+  );
   print_formatted_text(format, arg_list);
 
   // If a log file exists, write the message contents to it:
@@ -575,8 +722,9 @@ void warning(const char *context, const char *format, ...) {
   if(logger_recursive_mutex != NULL)
     pthread_mutex_unlock(logger_recursive_mutex);
 
-  // Free allocated resources:
+  // Free allocated resources and reset colors:
   va_end(arg_list);
+  reset_colors();
 
 }
 
@@ -585,19 +733,19 @@ static void apply_all_default_attributes() {
   printf("\x1B[0m");
 }
 
-static void apply_default_background_color() {
-  printf("\x1B[49m");
-}
-
-static void apply_default_text_color() {
-  printf("\x1B[39m");
-}
-
 static void clear_background_in_current_line() {
   // When bash creates a new line, it colors the background of the entire new
   // line automatically. The following printf clears any existing background
   // on the current line.
   printf("\x1B[K");
+}
+
+static void copy_display_colors(
+  DisplayColors* destination,
+  DisplayColors* origin
+) {
+  destination->background_color = origin->background_color;
+  destination->text_color = origin->text_color;
 }
 
 static void log_datetime(FILE* log_file, const char* str_format) {
@@ -634,12 +782,14 @@ static void log_formatted_text_content(
 
 }
 
-static void log_message(FILE* log_file,
-                        const char* date_time_format,
-                        const char* msg_context,
-                        const char* msg_type,
-                        const char* msg_format,
-                        va_list msg_args) {
+static void log_message(
+  FILE* log_file,
+  const char* date_time_format,
+  const char* msg_context,
+  const char* msg_type,
+  const char* msg_format,
+  va_list msg_args
+) {
 
   // This check is a little of an overkill... but better safe than sorry!
   if(log_file != NULL) {
@@ -661,8 +811,10 @@ static void log_message(FILE* log_file,
 }
 
 static void print_context(const char *context) {
-  color_text(B_WHT);
-  reset_background_color();
+  color_text(logger_color_pallet.tag_colors[CONTEXT_TAG].text_color);
+  color_background(
+    logger_color_pallet.tag_colors[CONTEXT_TAG].background_color
+  );
   printf("%s: ", context);
   reset_colors();
 }
