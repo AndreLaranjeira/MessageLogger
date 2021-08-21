@@ -234,6 +234,68 @@ int get_time_format(TimeFormat *time_format_destination) {
 
 }
 
+int set_logger_msg_colors(
+  MessageCategory message_category,
+  DisplayColors *assigned_colors
+) {
+
+  if(assigned_colors == NULL) {
+    error(
+      "Logger module",
+      "Cannot assign display color information from NULL pointer. "
+      "Please use a valid reference.\n"
+    );
+    return -1;
+  }
+
+  // Acquire logger recursive lock if thread safety is enabled:
+  if(logger_recursive_mutex != NULL)
+    pthread_mutex_lock(logger_recursive_mutex);
+
+  copy_display_colors(
+    &logger_color_pallet.message_colors[message_category],
+    assigned_colors
+  );
+
+  // Release logger recursive lock if thread safety is enabled:
+  if(logger_recursive_mutex != NULL)
+    pthread_mutex_unlock(logger_recursive_mutex);
+
+  return 0;
+
+}
+
+int set_logger_tag_colors(
+  TagCategory tag_category,
+  DisplayColors *assigned_colors
+) {
+
+  if(assigned_colors == NULL) {
+    error(
+      "Logger module",
+      "Cannot assign display color information from NULL pointer. "
+      "Please use a valid reference.\n"
+    );
+    return -1;
+  }
+
+  // Acquire logger recursive lock if thread safety is enabled:
+  if(logger_recursive_mutex != NULL)
+    pthread_mutex_lock(logger_recursive_mutex);
+
+  copy_display_colors(
+    &logger_color_pallet.tag_colors[tag_category],
+    assigned_colors
+  );
+
+  // Release logger recursive lock if thread safety is enabled:
+  if(logger_recursive_mutex != NULL)
+    pthread_mutex_unlock(logger_recursive_mutex);
+
+  return 0;
+
+}
+
 int set_time_format(const char *new_format) {
 
   if(new_format == NULL) {
@@ -607,26 +669,6 @@ void reset_colors() {
 
 void reset_text_color() {
   color_text(DFLT);
-}
-
-void set_logger_msg_colors(
-  MessageCategory message_category,
-  DisplayColors assigned_colors
-) {
-  copy_display_colors(
-    &logger_color_pallet.message_colors[message_category],
-    &assigned_colors
-  );
-}
-
-void set_logger_tag_colors(
-  TagCategory tag_category,
-  DisplayColors assigned_colors
-) {
-  copy_display_colors(
-    &logger_color_pallet.tag_colors[tag_category],
-    &assigned_colors
-  );
 }
 
 void success(const char *context, const char *format, ...) {
