@@ -17,6 +17,9 @@ void* thread_example(void*);
 int main() {
 
   // Variable declaration:
+  DisplayColors current_success_message_colors, current_success_tag_colors;
+  DisplayColors custom_context_tag_colors, custom_info_msg_colors;
+  DisplayColors custom_info_tag_colors;
   int i, thread_args[THREAD_NUM];
   pthread_t thread_ids[THREAD_NUM];
   TimeFormat my_time_format;
@@ -79,6 +82,42 @@ int main() {
     pthread_join(thread_ids[i], NULL);
     success("Main", "Thread %d finished!\n", i+1);
   }
+
+  printf("\n");
+
+  // Getting the display colors currently used in the logger:
+  printf("Getting the display colors currently used in the logger: \n");
+
+  get_logger_msg_colors(&current_success_message_colors, SUCCESS_MSG);
+  get_logger_tag_colors(&current_success_tag_colors, SUCCESS_TAG);
+
+  color_text(current_success_message_colors.text_color);
+  color_background(current_success_tag_colors.text_color);
+  printf(
+    "Text and background colors copied from the success message and tag text "
+    "color!\n"
+  );
+  reset_colors();
+
+  printf("\n");
+
+  // Changing the display colors used in the logger:
+  printf("Changing the display colors used in the logger: \n");
+
+  custom_context_tag_colors.text_color = B_GRN;
+  custom_context_tag_colors.background_color = B_WHT;
+
+  custom_info_msg_colors.text_color = B_WHT;
+  custom_info_msg_colors.background_color = CYN;
+
+  custom_info_tag_colors.text_color = B_BLA;
+  custom_info_tag_colors.background_color = CYN;
+
+  set_logger_tag_colors(CONTEXT_TAG, &custom_context_tag_colors);
+  set_logger_msg_colors(INFO_MSG, &custom_info_msg_colors);
+  set_logger_tag_colors(INFO_TAG, &custom_info_tag_colors);
+
+  info("My context", "This is an info message with a custom color scheme!\n");
 
   printf("\n");
 
