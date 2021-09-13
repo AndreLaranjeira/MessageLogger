@@ -204,7 +204,7 @@ void* thread_example (void *args) {
 
       case 5:
         lock_logger_recursive_mutex();
-        color_text(B_BLU);
+        color_text(BLU);
         color_background(B_GRN);
         printf("%s: Message number %d!\n", thread_context, i+1);
         reset_colors();

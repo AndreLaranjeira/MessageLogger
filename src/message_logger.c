@@ -301,7 +301,7 @@ int set_time_format(const char *new_format) {
   if(new_format == NULL) {
     error(
       "Logger module",
-      "Cannot set time format to a NULL pointer. "
+      "Cannot assign time format from a NULL pointer. "
       "Please use a valid reference.\n"
     );
     return -1;
