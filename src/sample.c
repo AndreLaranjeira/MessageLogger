@@ -121,6 +121,14 @@ int main() {
 
   printf("\n");
 
+  // Resetting the display colors used in the logger:
+  printf("Resetting the display colors used in the logger: \n");
+
+  reset_logger_colors();
+  info("Another context", "The logger color scheme has been restaured!\n");
+
+  printf("\n");
+
   // Getting the current time format:
   printf("Getting the current time format: \n");
 

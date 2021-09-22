@@ -4,6 +4,10 @@
 #include "message_logger.h"
 
 // Private variables:
+const static LoggerColorPallet default_color_pallet = {
+  .message_colors = DEFAULT_LOGGER_MESSAGE_COLORS,
+  .tag_colors = DEFAULT_LOGGER_TAG_COLORS
+};
 static char time_fmt[TIME_FMT_SIZE] = "%H:%M:%S %d-%m-%Y";
 static FILE *log_file = NULL;
 static LoggerColorPallet logger_color_pallet = {
@@ -15,7 +19,7 @@ static pthread_mutex_t *logger_recursive_mutex = NULL;
 // Private function headers:
 static void apply_all_default_attributes();
 static void clear_background_in_current_line();
-static void copy_display_colors(DisplayColors*, DisplayColors*);
+static void copy_display_colors(DisplayColors*, const DisplayColors*);
 static void log_datetime(FILE*, const char*);
 static void log_formatted_text_content(FILE*, const char*, va_list);
 static void log_message(FILE*, const char*, const char*, const char*,
@@ -624,6 +628,33 @@ void reset_colors() {
     pthread_mutex_unlock(logger_recursive_mutex);
 }
 
+void reset_logger_colors() {
+
+  int i;
+
+  // Acquire logger recursive lock if thread safety is enabled:
+  if(logger_recursive_mutex != NULL)
+    pthread_mutex_lock(logger_recursive_mutex);
+
+  for(i = 0; i < NUM_OF_MESSAGE_CATEGORIES; i++) {
+    copy_display_colors(
+      &logger_color_pallet.message_colors[i],
+      &default_color_pallet.message_colors[i]
+    );
+  }
+
+  for(i = 0; i < NUM_OF_TAG_CATEGORIES; i++) {
+    copy_display_colors(
+      &logger_color_pallet.tag_colors[i],
+      &default_color_pallet.tag_colors[i]
+    );
+  }
+
+  // Release logger recursive lock if thread safety is enabled:
+  if(logger_recursive_mutex != NULL)
+    pthread_mutex_unlock(logger_recursive_mutex);
+}
+
 void reset_text_color() {
   color_text(DFLT);
 }
@@ -741,7 +772,7 @@ static void clear_background_in_current_line() {
 
 static void copy_display_colors(
   DisplayColors* destination,
-  DisplayColors* origin
+  const DisplayColors* origin
 ) {
   destination->background_color = origin->background_color;
   destination->text_color = origin->text_color;
