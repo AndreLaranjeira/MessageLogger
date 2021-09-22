@@ -4,8 +4,8 @@
 #include "message_logger.h"
 
 // Private variables:
-char time_fmt[TIME_FMT_SIZE] = "%H:%M:%S %d-%m-%Y";
-FILE *log_file = NULL;
+static char time_fmt[TIME_FMT_SIZE] = "%H:%M:%S %d-%m-%Y";
+static FILE *log_file = NULL;
 LoggerColorPallet logger_color_pallet = {
   .message_colors = {
     [DEFAULT_MSG] = {
@@ -53,7 +53,7 @@ LoggerColorPallet logger_color_pallet = {
     }
   }
 };
-pthread_mutex_t *logger_recursive_mutex = NULL;
+static pthread_mutex_t *logger_recursive_mutex = NULL;
 
 // Private function headers:
 static void apply_all_default_attributes();
