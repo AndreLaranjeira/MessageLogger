@@ -13,6 +13,50 @@
 #include <time.h>
 
 // Macros:
+#define DEFAULT_LOGGER_MESSAGE_COLORS { \
+  [DEFAULT_MSG] = {                     \
+    .text_color = DFLT,                 \
+    .background_color = DFLT            \
+  },                                    \
+  [ERROR_MSG] = {                       \
+    .text_color = DFLT,                 \
+    .background_color = DFLT            \
+  },                                    \
+  [INFO_MSG] = {                        \
+    .text_color = DFLT,                 \
+    .background_color = DFLT            \
+  },                                    \
+  [SUCCESS_MSG] = {                     \
+    .text_color = DFLT,                 \
+    .background_color = DFLT            \
+  },                                    \
+  [WARNING_MSG] = {                     \
+    .text_color = DFLT,                 \
+    .background_color = DFLT            \
+  }                                     \
+}
+#define DEFAULT_LOGGER_TAG_COLORS { \
+  [CONTEXT_TAG] = {                 \
+    .text_color = B_WHT,            \
+    .background_color = DFLT        \
+  },                                \
+  [ERROR_TAG] = {                   \
+    .text_color = B_RED,            \
+    .background_color = DFLT        \
+  },                                \
+  [INFO_TAG] = {                    \
+    .text_color = B_BLU,            \
+    .background_color = DFLT        \
+  },                                \
+  [SUCCESS_TAG] = {                 \
+    .text_color = B_GRN,            \
+    .background_color = DFLT        \
+  },                                \
+  [WARNING_TAG] = {                 \
+    .text_color = B_YEL,            \
+    .background_color = DFLT        \
+  }                                 \
+}
 #define TIME_FMT_SIZE 50
 
 // Enumerations:

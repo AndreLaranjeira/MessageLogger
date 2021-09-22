@@ -6,52 +6,9 @@
 // Private variables:
 static char time_fmt[TIME_FMT_SIZE] = "%H:%M:%S %d-%m-%Y";
 static FILE *log_file = NULL;
-LoggerColorPallet logger_color_pallet = {
-  .message_colors = {
-    [DEFAULT_MSG] = {
-      .text_color = DFLT,
-      .background_color = DFLT
-    },
-    [ERROR_MSG] = {
-      .text_color = DFLT,
-      .background_color = DFLT
-    },
-    [INFO_MSG] = {
-      .text_color = DFLT,
-      .background_color = DFLT
-    },
-    [SUCCESS_MSG] = {
-      .text_color = DFLT,
-      .background_color = DFLT
-    },
-    [WARNING_MSG] = {
-      .text_color = DFLT,
-      .background_color = DFLT
-    },
-  },
-
-  .tag_colors = {
-    [CONTEXT_TAG] = {
-      .text_color = B_WHT,
-      .background_color = DFLT
-    },
-    [ERROR_TAG] = {
-      .text_color = B_RED,
-      .background_color = DFLT
-    },
-    [INFO_TAG] = {
-      .text_color = B_BLU,
-      .background_color = DFLT
-    },
-    [SUCCESS_TAG] = {
-      .text_color = B_GRN,
-      .background_color = DFLT
-    },
-    [WARNING_TAG] = {
-      .text_color = B_YEL,
-      .background_color = DFLT
-    }
-  }
+static LoggerColorPallet logger_color_pallet = {
+  .message_colors = DEFAULT_LOGGER_MESSAGE_COLORS,
+  .tag_colors = DEFAULT_LOGGER_TAG_COLORS
 };
 static pthread_mutex_t *logger_recursive_mutex = NULL;
 
