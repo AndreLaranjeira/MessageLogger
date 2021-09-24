@@ -856,7 +856,6 @@ static void print_context(const char *context) {
     logger_color_pallet.tag_colors[CONTEXT_TAG].background_color
   );
   printf("%s: ", context);
-  reset_colors();
 }
 
 static void print_formatted_text(const char* text_format, va_list text_args) {
