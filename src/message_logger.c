@@ -491,6 +491,9 @@ void error(const char *context, const char *format, ...) {
   );
   print_formatted_text(format, arg_list);
 
+  // Reset display colors:
+  reset_colors();
+
   // If a log file exists, write the message contents to it:
   if(log_file != NULL)
     log_message(log_file, time_fmt, context, msg_type, format, arg_list);
@@ -499,9 +502,8 @@ void error(const char *context, const char *format, ...) {
   if(logger_recursive_mutex != NULL)
     pthread_mutex_unlock(logger_recursive_mutex);
 
-  // Free allocated resources and reset colors:
+  // Free allocated resources:
   va_end(arg_list);
-  reset_colors();
 
 }
 
@@ -533,6 +535,9 @@ void info(const char *context, const char *format, ...) {
   );
   print_formatted_text(format, arg_list);
 
+  // Reset display colors:
+  reset_colors();
+
   // If a log file exists, write the message contents to it:
   if(log_file != NULL)
     log_message(log_file, time_fmt, context, msg_type, format, arg_list);
@@ -541,9 +546,8 @@ void info(const char *context, const char *format, ...) {
   if(logger_recursive_mutex != NULL)
     pthread_mutex_unlock(logger_recursive_mutex);
 
-  // Free allocated resources and reset colors:
+  // Free allocated resources:
   va_end(arg_list);
-  reset_colors();
 
 }
 
@@ -597,6 +601,9 @@ void message(const char *context, const char *format, ...) {
   );
   print_formatted_text(format, arg_list);
 
+  // Reset display colors:
+  reset_colors();
+
   // If a log file exists, write the message contents to it:
   if(log_file != NULL)
     log_message(log_file, time_fmt, context, NULL, format, arg_list);
@@ -605,9 +612,8 @@ void message(const char *context, const char *format, ...) {
   if(logger_recursive_mutex != NULL)
     pthread_mutex_unlock(logger_recursive_mutex);
 
-  // Free allocated resources and reset colors:
+  // Free allocated resources:
   va_end(arg_list);
-  reset_colors();
 
 }
 
@@ -689,6 +695,9 @@ void success(const char *context, const char *format, ...) {
   );
   print_formatted_text(format, arg_list);
 
+  // Reset display colors:
+  reset_colors();
+
   // If a log file exists, write the message contents to it:
   if(log_file != NULL)
     log_message(log_file, time_fmt, context, msg_type, format, arg_list);
@@ -697,9 +706,8 @@ void success(const char *context, const char *format, ...) {
   if(logger_recursive_mutex != NULL)
     pthread_mutex_unlock(logger_recursive_mutex);
 
-  // Free allocated resources and reset colors:
+  // Free allocated resources:
   va_end(arg_list);
-  reset_colors();
 
 }
 
@@ -744,6 +752,9 @@ void warning(const char *context, const char *format, ...) {
   );
   print_formatted_text(format, arg_list);
 
+  // Reset display colors:
+  reset_colors();
+
   // If a log file exists, write the message contents to it:
   if(log_file != NULL)
     log_message(log_file, time_fmt, context, msg_type, format, arg_list);
@@ -752,9 +763,8 @@ void warning(const char *context, const char *format, ...) {
   if(logger_recursive_mutex != NULL)
     pthread_mutex_unlock(logger_recursive_mutex);
 
-  // Free allocated resources and reset colors:
+  // Free allocated resources:
   va_end(arg_list);
-  reset_colors();
 
 }
 
