@@ -95,7 +95,7 @@ int main() {
   color_background(current_success_tag_colors.text_color);
   printf(
     "Text and background colors copied from the success message and tag text "
-    "color!\n"
+    "colors!\n"
   );
   reset_colors();
 
@@ -125,7 +125,7 @@ int main() {
   printf("Resetting the display colors used in the logger: \n");
 
   reset_logger_colors();
-  info("Another context", "The logger color scheme has been restaured!\n");
+  info("Another context", "The logger color scheme has been reset!\n");
 
   printf("\n");
 
