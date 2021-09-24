@@ -111,7 +111,7 @@ int get_logger_msg_colors(
   if(display_colors_destination == NULL) {
     error(
       "Logger module",
-      "Cannot store display color information in NULL pointer. "
+      "Cannot store display color information in NULL pointer! "
       "Please use a valid reference.\n"
     );
     return -1;
@@ -142,7 +142,7 @@ int get_logger_tag_colors(
   if(display_colors_destination == NULL) {
     error(
       "Logger module",
-      "Cannot store display color information in NULL pointer. "
+      "Cannot store display color information in NULL pointer! "
       "Please use a valid reference.\n"
     );
     return -1;
@@ -170,7 +170,7 @@ int get_time_format(TimeFormat *time_format_destination) {
   if(time_format_destination == NULL) {
     error(
       "Logger module",
-      "Cannot store time format in NULL pointer. "
+      "Cannot store time format in NULL pointer! "
       "Please use a valid reference.\n"
     );
     return -1;
@@ -203,7 +203,7 @@ int set_logger_msg_colors(
   if(assigned_colors == NULL) {
     error(
       "Logger module",
-      "Cannot assign display color information from NULL pointer. "
+      "Cannot assign display color information from NULL pointer! "
       "Please use a valid reference.\n"
     );
     return -1;
@@ -234,7 +234,7 @@ int set_logger_tag_colors(
   if(assigned_colors == NULL) {
     error(
       "Logger module",
-      "Cannot assign display color information from NULL pointer. "
+      "Cannot assign display color information from NULL pointer! "
       "Please use a valid reference.\n"
     );
     return -1;
@@ -262,7 +262,7 @@ int set_time_format(const char *new_format) {
   if(new_format == NULL) {
     error(
       "Logger module",
-      "Cannot assign time format from a NULL pointer. "
+      "Cannot assign time format from a NULL pointer! "
       "Please use a valid reference.\n"
     );
     return -1;
