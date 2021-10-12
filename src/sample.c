@@ -1,4 +1,7 @@
-// Test program for MessageLogger module.
+// Copyright (c) 2019 André Filipe Caldas Laranjeira
+// MIT License
+
+// Test program for the Message Logger module.
 
 // Includes:
 #include <pthread.h>

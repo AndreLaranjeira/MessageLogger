@@ -1,3 +1,6 @@
+// Copyright (c) 2019 André Filipe Caldas Laranjeira
+// MIT License
+
 // Message logger module - Header file.
 
 // Define guard:
