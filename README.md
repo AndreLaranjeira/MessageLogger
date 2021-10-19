@@ -1,13 +1,13 @@
 # Message Logger
 
 ## Description
-A simple message logger for the C programming language with different message types. Meant to be used in everyday projects to simplify the task of printing messages to the user.
+A simple message logger for the C programming language with different message types. Meant to be used in everyday projects to simplify the task of printing messages to the user or saving them in a log file.
 
 ## Features
 - Five different types of messages with context fields: message, success, warning, error and info.
 - Public functions to color the text and the background, giving the programmer greater flexibility.
-- Optional configuration to store logged messages in a separate file.
-  - Configurable time format for messages.
+- Optional configuration to store logged messages in a separate log file.
+  - Configurable time format for log file.
 - Thread-safe message logging.
 - Color customization for message types.
 
@@ -17,7 +17,7 @@ A simple message logger for the C programming language with different message ty
 
 * `doxygen` - For generating documentation;
 * `gcc` - For compiling the sample file;
-* `libpthread` - For compiling the message logger module;
+* `libpthread` - For compiling the Message Logger module;
 * `pdflatex` \(optional\) - For compiling the documentation in the latex format;
 
 ### Use it in your projects
@@ -32,7 +32,7 @@ Feel free to use, modify and examine the message logger's code in any way that i
 
 ### Generating documentation
 
-To generate the documentation for the message logger module, you will need to have the program `doxygen` installed and included in your $PATH. You will also need the program `pdflatex` installed and included in your $PATH if you want to compile the documentation in the latex format.
+To generate the documentation for the Message Logger module, you will need to have the program `doxygen` installed and included in your $PATH. You will also need the program `pdflatex` installed and included in your $PATH if you want to compile the documentation in the latex format.
 
 Once you have installed the necessary dependencies, simply run the command `make doc`, on a shell from the **project's root directory**. This should generate documentation files both in the HTML and Latex formats. The makefile will then prompt you if you want to immediately open any of the generated documentation.
 
@@ -40,9 +40,9 @@ To open the generated HTML documentation, open the file `doc/html/index.html`. T
 
 ### Sample file
 
-If you want to see this message logger module in action, we have included the `sample.c` source code file, which showcases some of the available features in this message logger module. To compile this sample into an executable, you will need the program `gcc` installed and included in your $PATH. If you wish to use a different compiler, change the `CC` variable in the `Makefile` and make any appropriate changes to how this variable is called.
+If you want to see this Message Logger module in action, we have included the `sample.c` source code file, which showcases some of the available features in this Message Logger module. To compile this sample into an executable, you will need the program `gcc` installed and included in your $PATH. If you wish to use a different compiler, change the `CC` variable in the `Makefile` and make any appropriate changes to how this variable is called.
 
-To sample the message logger module, follow the commands bellow:
+To sample the Message Logger module, follow the commands bellow:
 
 1. Run the command `make`, on a shell from the **project's root directory** to compile said source file into an executable;
 2. Open the executable `msg-logger-sample` that was generated.
