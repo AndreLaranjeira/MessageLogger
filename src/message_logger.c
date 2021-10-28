@@ -6,11 +6,13 @@
 // Includes:
 #include "message_logger.h"
 
-// Private variables:
+// Private constants:
 const static LoggerColorPallet default_color_pallet = {
   .message_colors = DEFAULT_LOGGER_MESSAGE_COLORS,
   .tag_colors = DEFAULT_LOGGER_TAG_COLORS
 };
+
+// Private variables:
 static char time_fmt[TIME_FMT_SIZE] = "%H:%M:%S %d-%m-%Y";
 static FILE *log_file = NULL;
 static LoggerColorPallet logger_color_pallet = {
@@ -200,7 +202,7 @@ int get_time_format(TimeFormat *time_format_destination) {
 
 int set_logger_msg_colors(
   MessageCategory message_category,
-  DisplayColors *assigned_colors
+  const DisplayColors *assigned_colors
 ) {
 
   if(assigned_colors == NULL) {
@@ -231,7 +233,7 @@ int set_logger_msg_colors(
 
 int set_logger_tag_colors(
   TagCategory tag_category,
-  DisplayColors *assigned_colors
+  const DisplayColors *assigned_colors
 ) {
 
   if(assigned_colors == NULL) {
