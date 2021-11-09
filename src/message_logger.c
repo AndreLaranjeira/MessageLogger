@@ -20,22 +20,24 @@ const static LoggerColorPallet default_color_pallet = {
 };
 
 // Private variables:
-static char time_fmt[TIME_FMT_SIZE] = "%H:%M:%S %d-%m-%Y";
 static FILE *log_file = NULL;
 static LoggerColorPallet logger_color_pallet = {
   .message_colors = DEFAULT_LOGGER_MESSAGE_COLORS,
   .tag_colors = DEFAULT_LOGGER_TAG_COLORS
 };
 static pthread_mutex_t *logger_recursive_mutex = NULL;
+static TimeFormat logger_time_fmt = {
+  .string_representation = "%H:%M:%S %d-%m-%Y"
+};
 
 // Private function prototypes:
 static void apply_all_default_attributes();
-static void clear_background_in_current_line();
+static void clear_line_background_past_cursor();
 static void copy_display_colors(DisplayColors*, const DisplayColors*);
-static void log_datetime(FILE*, const char*);
 static void log_formatted_text_content(FILE*, const char*, va_list);
-static void log_message(FILE*, const char*, const char*, const char*,
+static void log_message(FILE*, TimeFormat*, const char*, const char*,
                         const char*, va_list);
+static void log_timestamp(FILE*, TimeFormat*);
 static void print_context(const char*);
 static void print_formatted_text(const char*, va_list);
 
@@ -195,7 +197,7 @@ int get_time_format(TimeFormat *time_format_destination) {
   // Copy logger time format to destination time format:
   strncpy(
     time_format_destination->string_representation,
-    time_fmt,
+    logger_time_fmt.string_representation,
     TIME_FMT_SIZE
   );
 
@@ -295,7 +297,7 @@ int set_time_format(const char *new_format) {
     pthread_mutex_lock(logger_recursive_mutex);
 
   // Copy new time format to logger time format:
-  strncpy(time_fmt, new_format, TIME_FMT_SIZE);
+  strncpy(logger_time_fmt.string_representation, new_format, TIME_FMT_SIZE);
 
   // Release logger recursive lock if thread safety is enabled:
   if(logger_recursive_mutex != NULL)
@@ -383,7 +385,7 @@ void color_background(Color p_color) {
 
   }
 
-  clear_background_in_current_line();
+  clear_line_background_past_cursor();
 
   // Release logger recursive lock if thread safety is enabled:
   if(logger_recursive_mutex != NULL)
@@ -508,7 +510,14 @@ void error(const char *context, const char *format, ...) {
 
   // If a log file exists, write the message contents to it:
   if(log_file != NULL)
-    log_message(log_file, time_fmt, context, msg_type, format, arg_list);
+    log_message(
+      log_file,
+      &logger_time_fmt,
+      context,
+      msg_type,
+      format,
+      arg_list
+    );
 
   // Release logger recursive lock if thread safety is enabled:
   if(logger_recursive_mutex != NULL)
@@ -552,7 +561,14 @@ void info(const char *context, const char *format, ...) {
 
   // If a log file exists, write the message contents to it:
   if(log_file != NULL)
-    log_message(log_file, time_fmt, context, msg_type, format, arg_list);
+    log_message(
+      log_file,
+      &logger_time_fmt,
+      context,
+      msg_type,
+      format,
+      arg_list
+    );
 
   // Release logger recursive lock if thread safety is enabled:
   if(logger_recursive_mutex != NULL)
@@ -618,7 +634,14 @@ void message(const char *context, const char *format, ...) {
 
   // If a log file exists, write the message contents to it:
   if(log_file != NULL)
-    log_message(log_file, time_fmt, context, NULL, format, arg_list);
+    log_message(
+      log_file,
+      &logger_time_fmt,
+      context,
+      NULL,
+      format,
+      arg_list
+    );
 
   // Release logger recursive lock if thread safety is enabled:
   if(logger_recursive_mutex != NULL)
@@ -639,7 +662,7 @@ void reset_colors() {
     pthread_mutex_lock(logger_recursive_mutex);
 
   apply_all_default_attributes();
-  clear_background_in_current_line();
+  clear_line_background_past_cursor();
 
   // Release logger recursive lock if thread safety is enabled:
   if(logger_recursive_mutex != NULL)
@@ -712,7 +735,14 @@ void success(const char *context, const char *format, ...) {
 
   // If a log file exists, write the message contents to it:
   if(log_file != NULL)
-    log_message(log_file, time_fmt, context, msg_type, format, arg_list);
+    log_message(
+      log_file,
+      &logger_time_fmt,
+      context,
+      msg_type,
+      format,
+      arg_list
+    );
 
   // Release logger recursive lock if thread safety is enabled:
   if(logger_recursive_mutex != NULL)
@@ -769,7 +799,14 @@ void warning(const char *context, const char *format, ...) {
 
   // If a log file exists, write the message contents to it:
   if(log_file != NULL)
-    log_message(log_file, time_fmt, context, msg_type, format, arg_list);
+    log_message(
+      log_file,
+      &logger_time_fmt,
+      context,
+      msg_type,
+      format,
+      arg_list
+    );
 
   // Release logger recursive lock if thread safety is enabled:
   if(logger_recursive_mutex != NULL)
@@ -785,7 +822,7 @@ static void apply_all_default_attributes() {
   printf("\x1B[0m");
 }
 
-static void clear_background_in_current_line() {
+static void clear_line_background_past_cursor() {
   // When bash creates a new line, it colors the background of the entire new
   // line automatically. The following printf clears any existing background
   // on the current line.
@@ -798,24 +835,6 @@ static void copy_display_colors(
 ) {
   destination->background_color = origin->background_color;
   destination->text_color = origin->text_color;
-}
-
-static void log_datetime(FILE* log_file, const char* str_format) {
-
-  char time_string[40];
-  struct tm *time_info;
-  time_t raw_time;
-
-  // Get time and date info:
-  time(&raw_time);
-  time_info = localtime(&raw_time);
-
-  // Format it into a string:
-  strftime(time_string, 40, str_format, time_info);
-
-  // Log the string to a file:
-  fprintf(log_file, "[%s] ", time_string);
-
 }
 
 static void log_formatted_text_content(
@@ -836,7 +855,7 @@ static void log_formatted_text_content(
 
 static void log_message(
   FILE* log_file,
-  const char* date_time_format,
+  TimeFormat* time_format,
   const char* msg_context,
   const char* msg_type,
   const char* msg_format,
@@ -846,8 +865,8 @@ static void log_message(
   // This check is a little of an overkill... but better safe than sorry!
   if(log_file != NULL) {
 
-    // Log the date and time according to the format specified by the user:
-    log_datetime(log_file, date_time_format);
+    // Log the timestamp according to the format specified by the user:
+    log_timestamp(log_file, time_format);
 
     // Log the message context:
     if(msg_context != NULL)
@@ -860,6 +879,29 @@ static void log_message(
     log_formatted_text_content(log_file, msg_format, msg_args);
 
   }
+}
+
+static void log_timestamp(FILE* log_file, TimeFormat* time_format) {
+
+  char timestamp[TIME_FMT_SIZE];
+  struct tm *time_info;
+  time_t raw_time;
+
+  // Get current time information:
+  time(&raw_time);
+  time_info = localtime(&raw_time);
+
+  // Format it into a string:
+  strftime(
+    timestamp,
+    TIME_FMT_SIZE,
+    time_format->string_representation,
+    time_info
+  );
+
+  // Log the string to a file:
+  fprintf(log_file, "[%s] ", timestamp);
+
 }
 
 static void print_context(const char *context) {

@@ -258,8 +258,7 @@ typedef struct {
 //!
 //! This function configures the Message Logger module to write any messages to
 //! a log file, in adition to priting them on the screen. Each message written
-//! on the log file has the message's contents and information on the message's
-//! datetime.
+//! on the log file has the message's contents and a timestamp.
 //!
 //! If an error occurs when configuring the log file, this function will return
 //! -1 and the Message Logger will print an error message explaining what went
