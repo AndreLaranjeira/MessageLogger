@@ -10,6 +10,7 @@ A simple message logger for the C programming language with different message ty
   - Configurable time format for log file.
 - Thread-safe message logging.
 - Color customization for message types.
+- Full documentation provided.
 
 ## How to use
 
