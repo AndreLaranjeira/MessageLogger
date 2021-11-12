@@ -29,7 +29,7 @@
 //!
 //! The array's length is expected to be equal to #NUM_OF_MESSAGE_CATEGORIES.
 //!
-//! Usage example:
+//! \par Usage example
 //! \code
 //! LoggerColorPallet color_pallet = {
 //!   .message_colors = DEFAULT_LOGGER_MESSAGE_COLORS,
@@ -65,7 +65,7 @@
 //!
 //! The array's length is expected to be equal to #NUM_OF_TAG_CATEGORIES.
 //!
-//! Usage example:
+//! \par Usage example
 //! \code
 //! LoggerColorPallet color_pallet = {
 //!   .tag_colors = DEFAULT_LOGGER_TAG_COLORS,
@@ -180,7 +180,7 @@ typedef enum {
 //! Companion macro to the #MessageCategory enumeration. Use it as the size of
 //! an array that should be accessed with a #MessageCategory as an index.
 //!
-//! Usage example:
+//! \par Usage example
 //! \code
 //! unsigned int message_log_quantity[NUM_OF_MESSAGE_CATEGORIES];
 //! message_log_quantity[DEFAULT_MSG] = 0;
@@ -193,7 +193,7 @@ typedef enum {
 //! Companion macro to the #TagCategory enumeration. Use it as the size of an
 //! array that should be accessed with a #TagCategory as an index.
 //!
-//! Usage example:
+//! \par Usage example
 //! \code
 //! char tag_text[NUM_OF_TAG_CATEGORIES][100];
 //! strcpy(tag_text[ERROR_TAG], "Critical error");
@@ -264,11 +264,10 @@ typedef struct {
 //! -1 and the Message Logger will print an error message explaining what went
 //! wrong.
 //!
-//! <b>Important:</b> After the Message Logger module is no longer used, the
-//! function logger_module_clean_up() must be called to close the log file
-//! created.
+//! \note After the Message Logger module is no longer used, the funciton
+//! logger_module_clean_up() must be called to close the log file created.
 //!
-//! Usage example:
+//! \par Usage example
 //! \code
 //! configure_log_file("logger-test.log", WRITE);
 //! // Use the Message Logger normally...
@@ -290,11 +289,11 @@ int configure_log_file(const char *file_name, LogFileMode file_mode);
 //! -1 and the Message Logger will print an error message explaining what went
 //! wrong.
 //!
-//! <b>Important:</b> After the Message Logger module is no longer used, the
-//! function logger_module_clean_up() must be called to release the memory
-//! allocated for the thread-safety data structures utilized.
+//! \note After the Message Logger module is no longer used, the function
+//! logger_module_clean_up() must be called to release the memory allocated for
+//! the thread-safety data structures utilized.
 //!
-//! Usage example:
+//! \par Usage example
 //! \code
 //! // In the main thread, before creating other threads, enable thread safety.
 //! enable_thread_safety();
@@ -329,11 +328,11 @@ int enable_thread_safety();
 //! return -1 and the Message Logger will print an error message explaining
 //! what went wrong.
 //!
-//! <b>Important:</b> This function MUST receive a non-NULL DisplayColors
-//! pointer to copy the information to. This function does NOT allocate memory
-//! on the pointer provided by the user.
+//! \warning This function MUST receive a non-NULL DisplayColors pointer to
+//! copy the information to. This function does NOT allocate memory on the
+//! pointer provided by the user.
 //!
-//! Usage example:
+//! \par Usage example
 //! \code
 //! DisplayColors current_success_message_colors;
 //! get_logger_msg_colors(&current_success_message_colors, SUCCESS_MSG);
@@ -362,11 +361,11 @@ int get_logger_msg_colors(
 //! return -1 and the Message Logger will print an error message explaining
 //! what went wrong.
 //!
-//! <b>Important:</b> This function MUST receive a non-NULL DisplayColors
-//! pointer to copy the information to. This function does NOT allocate memory
-//! on the pointer provided by the user.
+//! \warning This function MUST receive a non-NULL DisplayColors pointer to
+//! copy the information to. This function does NOT allocate memory on the
+//! pointer provided by the user.
 //!
-//! Usage example:
+//! \par Usage example
 //! \code
 //! DisplayColors current_success_tag_colors;
 //! get_logger_tag_colors(&current_success_tag_colors, SUCCESS_TAG);
@@ -391,11 +390,11 @@ int get_logger_tag_colors(
 //! -1 and the Message Logger will print an error message explaining what went
 //! wrong.
 //!
-//! <b>Important:</b> This function MUST receive a non-NULL TimeFormat pointer
-//! to copy the information to. This function does NOT allocate memory on the
-//! pointer provided by the user.
+//! \warning This function MUST receive a non-NULL TimeFormat pointer to copy
+//! the information to. This function does NOT allocate memory on the pointer
+//! provided by the user.
 //!
-//! Usage example:
+//! \par Usage example
 //! \code
 //! TimeFormat logger_time_format;
 //! get_time_format(&logger_time_format);
@@ -424,7 +423,7 @@ int get_time_format(TimeFormat *time_format_destination);
 //! return -1 and the Message Logger will print an error message explaining
 //! what went wrong.
 //!
-//! Usage example:
+//! \par Usage example
 //! \code
 //! DisplayColors custom_info_msg_colors = {
 //!   .text_color = B_WHT,
@@ -457,7 +456,7 @@ int set_logger_msg_colors(
 //! return -1 and the Message Logger will print an error message explaining
 //! what went wrong.
 //!
-//! Usage example:
+//! \par Usage example
 //! \code
 //! DisplayColors custom_info_tag_colors = {
 //!   .text_color = B_BLA,
@@ -486,7 +485,7 @@ int set_logger_tag_colors(
 //! -1 and the Message Logger will print an error message explaining what went
 //! wrong.
 //!
-//! Usage example:
+//! \par Usage example
 //! \code
 //! set_time_format("%c");
 //! \endcode
@@ -502,7 +501,7 @@ int set_time_format(const char *new_format);
 //! the middle of a text line, any existing background color will be cleared
 //! after the cursor's position.
 //!
-//! Usage example:
+//! \par Usage example
 //! \code
 //! color_background(B_GRN);
 //! \endcode
@@ -516,7 +515,7 @@ void color_background(Color p_color);
 //! the user. Bright colors are accompanied by a bold font weight, while the
 //! other font colors are accompanied by a regular font weight.
 //!
-//! Usage example:
+//! \par Usage example
 //! \code
 //! color_text(BLU);
 //! \endcode
@@ -531,13 +530,13 @@ void color_text(Color p_color);
 //! \param ... Arguments used to substitute placeholders in the message's
 //! contents.
 //!
-//! This function logs an error message to the terminal and configured log
+//! This function writes an error message to the terminal and configured log
 //! file. The message contains the caller context that originated the error, a
 //! tag that identifies the message as an error and the message's contents. If
 //! a log file is configured, the message will also have the timestamp
 //! information when written to the log file.
 //!
-//! Usage example:
+//! \par Usage example
 //! \code
 //! int arg = 0;
 //! error("Example", "%d: This is an error message with a context.\n", arg);
@@ -554,13 +553,13 @@ void error(const char *context, const char *format, ...);
 //! \param ... Arguments used to substitute placeholders in the message's
 //! contents.
 //!
-//! This function logs an info message to the terminal and configured log file.
+//! This function writes an info message to the terminal and configured log file.
 //! The message contains the caller context that originated the info message, a
 //! tag that identifies the message as an info message and the message's
 //! contents. If a log file is configured, the message will also have the
 //! timestamp information when written to the log file.
 //!
-//! Usage example:
+//! \par Usage example
 //! \code
 //! int arg = 0;
 //! info("Example", "%d: This is an info message with a context.\n", arg);
@@ -587,12 +586,12 @@ void info(const char *context, const char *format, ...);
 //! doesn't try to do the same from another thread while the user's code is
 //! running.
 //!
-//! <b>Important:</b> For this function to work properly, the function
+//! \warning For this function to work properly, the function
 //! enable_thread_safety() must have been called to configure the recursive
 //! mutex lock. Otherwise, this function will emit a warning and will have NO
 //! EFFECT.
 //!
-//! Usage example:
+//! \par Usage example
 //! \code
 //! // In the main thread, before creating other threads, enable thread safety.
 //! enable_thread_safety();
@@ -619,11 +618,11 @@ void lock_logger_recursive_mutex();
 //! afterwards, some configurations such as the log file and thread safety will
 //! NOT work.
 //!
-//! <b>Important:</b> This function NEEDS to be called when a log file is
-//! configured or when thread safety is enabled. Failure to do so might result
-//! in an incomplete log file or memory leaks.
+//! \warning This function NEEDS to be called when a log file is configured or
+//! when thread safety is enabled. Failure to do so might result in an
+//! incomplete log file or memory leaks.
 //!
-//! Usage example:
+//! \par Usage example
 //! \code
 //! // Use the logger normally...
 //! logger_module_clean_up();
@@ -639,13 +638,13 @@ void logger_module_clean_up();
 //! \param ... Arguments used to substitute placeholders in the message's
 //! contents.
 //!
-//! This function logs a regular message to the terminal and configured log
+//! This function writes a regular message to the terminal and configured log
 //! file. The message contains the caller context that originated the regular
 //! message and the message's contents. If a log file is configured, the
 //! message will also have the timestamp information when written to the log
 //! file.
 //!
-//! Usage example:
+//! \par Usage example
 //! \code
 //! int arg = 0;
 //! message("Example", "%d: This is a normal message with a context.\n", arg);
@@ -656,13 +655,13 @@ void message(const char *context, const char *format, ...);
 //! \fn void reset_background_color()
 //! \brief Reset the terminal's text background color to the default color.
 //!
-//! <b>Deprecation warning:</b> This function will be removed in the next major
-//! release. Use color_background(DFLT) instead.
+//! \deprecated This function will be removed in the next major release. Use
+//! color_background(DFLT) instead.
 //!
 //! This function resets the terminal's text background color to the default
 //! color specified in the terminal's configuration.
 //!
-//! Usage example:
+//! \par Usage example
 //! \code
 //! // Change the text background color in some way.
 //! reset_background_color();
@@ -671,14 +670,16 @@ void reset_background_color();
 
 //! \fn void reset_colors()
 //! \brief Reset all the terminal's colors and text attributes to their
-//! defaults.
+//! defaults and clears any existing text background colors past the cursor.
 //!
 //! This function resets all of the terminal's colors and text attributes to
-//! the default configurations specified for the terminal. This includes the
-//! colors used for text font and text background, the font weight and any
-//! other characteristics configured using ANSI escape codes.
+//! the default configurations specified for the terminal and clears any
+//! existing text background colors past the cursor in the current line. The
+//! attributes reset include the colors used for text font and text background,
+//! the font weight and any other characteristics configured using ANSI escape
+//! codes.
 //!
-//! Usage example:
+//! \par Usage example
 //! \code
 //! // Change various text configurations.
 //! reset_colors();
@@ -697,7 +698,7 @@ void reset_colors();
 //! set_logger_msg_colors \endlink and \link set_logger_tag_colors()
 //! set_logger_tag_colors \endlink will be lost after this function is called.
 //!
-//! Usage example:
+//! \par Usage example
 //! \code
 //! // Change various logger pallet colors.
 //! reset_logger_colors();
@@ -707,13 +708,13 @@ void reset_logger_colors();
 //! \fn void reset_text_color()
 //! \brief Reset the terminal's text font color to the default color.
 //!
-//! <b>Deprecation warning:</b> This function will be removed in the next major
-//! release. Use color_text(DFLT) instead.
+//! \deprecated This function will be removed in the next major release. Use
+//! color_text(DFLT) instead.
 //!
 //! This function resets the terminal's text font color to the default color
 //! specified in the terminal's configuration.
 //!
-//! Usage example:
+//! \par Usage example
 //! \code
 //! // Change the text font color in some way.
 //! reset_text_color();
@@ -729,13 +730,13 @@ void reset_text_color();
 //! \param ... Arguments used to substitute placeholders in the message's
 //! contents.
 //!
-//! This function logs a success message to the terminal and configured log
+//! This function writes a success message to the terminal and configured log
 //! file. The message contains the caller context that originated the success
 //! message, a tag that identifies the message as a success message and the
 //! message's contents. If a log file is configured, the message will also have
 //! the timestamp information when written to the log file.
 //!
-//! Usage example:
+//! \par Usage example
 //! \code
 //! int arg = 0;
 //! success("Example", "%d: This is a success message with a context.\n", arg);
@@ -763,12 +764,12 @@ void success(const char *context, const char *format, ...);
 //! it's operations in a thread safe manner after the user prints all
 //! information to the screen.
 //!
-//! <b>Important:</b> For this function to work properly, the function
+//! \warning For this function to work properly, the function
 //! enable_thread_safety() must have been called to configure the recursive
 //! mutex lock. Otherwise, this function will emit a warning and will have NO
 //! EFFECT.
 //!
-//! Usage example:
+//! \par Usage example
 //! \code
 //! // In the main thread, before creating other threads, enable thread safety.
 //! enable_thread_safety();
@@ -795,13 +796,13 @@ void unlock_logger_recursive_mutex();
 //! \param ... Arguments used to substitute placeholders in the message's
 //! contents.
 //!
-//! This function logs a warning message to the terminal and configured log
+//! This function writes a warning message to the terminal and configured log
 //! file. The message contains the caller context that originated the warning,
 //! a tag that identifies the message as a warning and the message's contents.
 //! If a log file is configured, the message will also have the timestamp
 //! information when written to the log file.
 //!
-//! Usage example:
+//! \par Usage example
 //! \code
 //! int arg = 0;
 //! warning("Example", "%d: This is a warning message with a context.\n", arg);
