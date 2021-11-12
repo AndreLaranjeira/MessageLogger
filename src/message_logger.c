@@ -14,18 +14,27 @@
 #include "message_logger.h"
 
 // Private constants:
+//! \brief Default logger color pallet configuration.
 const static LoggerColorPallet default_color_pallet = {
   .message_colors = DEFAULT_LOGGER_MESSAGE_COLORS,
   .tag_colors = DEFAULT_LOGGER_TAG_COLORS
 };
 
 // Private variables:
+
+//! \brief Message Logger's file pointer for any configured log file.
 static FILE *log_file = NULL;
+
+//! \brief Message Logger's color pallet for messages and tags.
 static LoggerColorPallet logger_color_pallet = {
   .message_colors = DEFAULT_LOGGER_MESSAGE_COLORS,
   .tag_colors = DEFAULT_LOGGER_TAG_COLORS
 };
+
+//! \brief Message Logger's recursive mutex used to ensure thread safety.
 static pthread_mutex_t *logger_recursive_mutex = NULL;
+
+//! \brief Message Logger's time format for log file timestamps.
 static TimeFormat logger_time_fmt = {
   .string_representation = "%H:%M:%S %d-%m-%Y"
 };
@@ -276,8 +285,8 @@ static void log_timestamp(FILE* log_file, TimeFormat* time_format);
 //! \param context Text containing the message's caller context.
 //!
 //! This function writes the context tag of a message to the terminal. The
-//! colors used for the context tag are taken from the Message Logger's
-//! LoggerColorPallet.
+//! colors used for the context tag are taken from the \link
+//! #logger_color_pallet Message Logger's color pallet. \endlink
 //!
 //! \par Usage example
 //! \code

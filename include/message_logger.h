@@ -410,14 +410,15 @@ int get_time_format(TimeFormat *time_format_destination);
 //! \param message_category Category of message whose display colors are being
 //! set.
 //! \param assigned_colors Pointer to the display colors being copied to a
-//! message category of the Message Logger's LoggerColorPallet.
+//! message category of the \link #logger_color_pallet Message Logger's
+//! color pallet. \endlink
 //! \return Returns 0 when successfully executed and -1 if an error occurs.
 //!
 //! This function sets the display colors for a given #MessageCategory in the
-//! Message Logger's LoggerColorPallet. This is done by copying the information
-//! from a valid, non-NULL DisplayColors pointer provided by the user to an
-//! index of the \link LoggerColorPallet::message_colors message_colors
-//! \endlink array.
+//! \link #logger_color_pallet Message Logger's color pallet. \endlink This is
+//! done by copying the information from a valid, non-NULL DisplayColors
+//! pointer provided by the user to an index of the \link
+//! LoggerColorPallet::message_colors message_colors \endlink array.
 //!
 //! If an error occurs when setting the display colors, this function will
 //! return -1 and the Message Logger will print an error message explaining
@@ -444,13 +445,15 @@ int set_logger_msg_colors(
 //! category.
 //! \param tag_category Category of tag whose display colors are being set.
 //! \param assigned_colors Pointer to the display colors being copied to a tag
-//! category of the Message Logger's LoggerColorPallet.
+//! category of the \link #logger_color_pallet Message Logger's
+//! color pallet. \endlink
 //! \return Returns 0 when successfully executed and -1 if an error occurs.
 //!
-//! This function sets the display colors for a given #TagCategory in the
-//! Message Logger's LoggerColorPallet. This is done by copying the information
-//! from a valid, non-NULL DisplayColors pointer provided by the user to an
-//! index of the \link LoggerColorPallet::tag_colors tag_colors \endlink array.
+//! This function sets the display colors for a given #TagCategory in the \link
+//! #logger_color_pallet Message Logger's color pallet. \endlink This is done
+//! by copying the information from a valid, non-NULL DisplayColors pointer
+//! provided by the user to an index of the \link LoggerColorPallet::tag_colors
+//! tag_colors \endlink array.
 //!
 //! If an error occurs when setting the display colors, this function will
 //! return -1 and the Message Logger will print an error message explaining
@@ -476,8 +479,9 @@ int set_logger_tag_colors(
 //! \return Returns 0 when successfully executed and -1 if an error occurs.
 //!
 //! This function sets the \link TimeFormat::string_representation
-//! string_representation \endlink in the Message Logger's TimeFormat, which is
-//! used when saving messages to a log file if one is configured. The time
+//! string_representation \endlink in the \link #logger_time_fmt
+//! Message Logger's time format. \endlink This format is used when
+//! timestamping messages saved to a log file, if one is configured. The time
 //! format information is copied from a valid, non-NULL pointer provided by the
 //! user.
 //!
@@ -568,8 +572,9 @@ void error(const char *context, const char *format, ...);
 void info(const char *context, const char *format, ...);
 
 //! \fn void lock_logger_recursive_mutex()
-//! \brief Lock the Message Logger's recursive mutex lock, preventing any
-//! other thread from using the Message Logger. Thread safety MUST be enabled.
+//! \brief Lock the \link #logger_recursive_mutex Message Logger's recursive
+//! mutex lock. \endlink This prevents any other thread from using the Message
+//! Logger. Thread safety MUST be enabled.
 //!
 //! This function locks the recursive mutex lock utilized by the Message Logger
 //! to ensure thread safety. When the recursive mutex is locked by a thread,
@@ -687,16 +692,18 @@ void reset_background_color();
 void reset_colors();
 
 //! \fn void reset_logger_colors()
-//! \brief Reset the Message Logger's colors to their defaults.
+//! \brief Reset the \link #logger_color_pallet Message Logger's color pallet
+//! \endlink colors to their defaults.
 //!
-//! This function resets the Message Logger's LoggerColorPallet by setting it's
-//! \link LoggerColorPallet::message_colors message_colors \endlink and \link
-//! LoggerColorPallet::tag_colors tag_colors \endlink to the default values
-//! specifed in the macros #DEFAULT_LOGGER_MESSAGE_COLORS and
-//! #DEFAULT_LOGGER_TAG_COLORS. ALL the values are reset, so any changes made
-//! with calls to the functions \link set_logger_msg_colors()
-//! set_logger_msg_colors \endlink and \link set_logger_tag_colors()
-//! set_logger_tag_colors \endlink will be lost after this function is called.
+//! This function resets the \link #logger_color_pallet Message Logger's color
+//! pallet \endlink by setting it's \link LoggerColorPallet::message_colors
+//! message_colors \endlink and \link LoggerColorPallet::tag_colors tag_colors
+//! \endlink to the default values specifed in the macros
+//! #DEFAULT_LOGGER_MESSAGE_COLORS and #DEFAULT_LOGGER_TAG_COLORS. ALL the
+//! values are reset, so any changes made with calls to the functions
+//! \link set_logger_msg_colors() set_logger_msg_colors \endlink and \link
+//! set_logger_tag_colors() set_logger_tag_colors \endlink will be lost after
+//! this function is called.
 //!
 //! \par Usage example
 //! \code
@@ -745,7 +752,8 @@ void reset_text_color();
 void success(const char *context, const char *format, ...);
 
 //! \fn void unlock_logger_recursive_mutex()
-//! \brief Unlock the Message Logger's recursive mutex lock, allowing other
+//! \brief Unlock the \link #logger_recursive_mutex Message Logger's recursive
+//! mutex lock \endlink, allowing other
 //! threads to use the Message Logger if no recursive locks remain. Thread
 //! safety MUST be enabled.
 //!
