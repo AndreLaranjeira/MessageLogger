@@ -13,8 +13,8 @@
 // Macros:
 #define THREAD_NUM 4
 
-// Auxiliary function headers:
-void* thread_example(void*);
+// Auxiliary function prototypes:
+void* thread_example(void *args);
 
 // Main function:
 int main() {
