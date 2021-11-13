@@ -1,10 +1,10 @@
 // Copyright (c) 2019 André Filipe Caldas Laranjeira
 // MIT License
 
-// Message logger module - Source code.
+// Message Logger module - Source code.
 //! \file message_logger.c
 //! \author André Filipe Caldas Laranjeira
-//! \brief Message logger module - Source code.
+//! \brief Message Logger module - Source code.
 //!
 //! The Message Logger module source file contains the implementation of all
 //! the functions provided by the Message Logger module and private state
