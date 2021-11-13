@@ -1,4 +1,7 @@
-// Test program for MessageLogger module.
+// Copyright (c) 2019 André Filipe Caldas Laranjeira
+// MIT License
+
+// Test program for the Message Logger module.
 
 // Includes:
 #include <pthread.h>
@@ -10,8 +13,8 @@
 // Macros:
 #define THREAD_NUM 4
 
-// Auxiliary function headers:
-void* thread_example(void*);
+// Auxiliary function prototypes:
+void* thread_example(void *args);
 
 // Main function:
 int main() {
