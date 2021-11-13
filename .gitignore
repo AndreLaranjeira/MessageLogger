@@ -6,3 +6,6 @@ msg-logger-sample
 
 # Log files:
 *.log
+
+# Project documentation:
+doc
