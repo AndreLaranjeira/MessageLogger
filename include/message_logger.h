@@ -7,7 +7,7 @@
 //! \brief Message Logger module - Header file.
 //!
 //! The Message Logger module header file contains all macros, enumerations,
-//! types and function headers provided by the Message Logger module.
+//! types and function prototypes provided by the Message Logger module.
 
 // Define guard:
 #ifndef MESSAGE_LOGGER_H_

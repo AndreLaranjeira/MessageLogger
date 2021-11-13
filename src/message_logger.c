@@ -7,13 +7,14 @@
 //! \brief Message Logger module - Source code.
 //!
 //! The Message Logger module source file contains the implementation of all
-//! the functions provided by the Message Logger module and private state
-//! variables.
+//! the functions provided by the Message Logger module, private functions and
+//! private state variables.
 
 // Includes:
 #include "message_logger.h"
 
 // Private constants:
+
 //! \brief Default logger color pallet configuration.
 const static LoggerColorPallet default_color_pallet = {
   .message_colors = DEFAULT_LOGGER_MESSAGE_COLORS,

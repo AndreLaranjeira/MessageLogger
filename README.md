@@ -23,13 +23,13 @@ A simple message logger for the C programming language with different message ty
 
 ### Use it in your projects
 
-To use this message logger as a module in your project, follow the steps bellow:
+To use the Message Logger as a module in your project, follow the steps bellow:
 
 1. Copy the header file (`message_logger.h`) to your include directory and the source file (`message_logger.c`) to your source directory;
 2. Update any Makefiles, compilation instructions or other project settings to account for these files and to use the pthreads library in compilation with the flag `-lpthread`;
 3. Include the header file in your code with the command `#include "message_logger.h"`.
 
-Feel free to use, modify and examine the message logger's code in any way that is _in accordance with the project's MIT license_.
+Feel free to use, modify and examine the Message Logger's code in any way that is _in accordance with the project's MIT license_.
 
 ### Generating documentation
 
