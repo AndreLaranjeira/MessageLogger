@@ -40,8 +40,12 @@ $(EXE): $(OBJ)
 	$(CC) -o $@ $^ $(CFLAGS) $(LIBS)
 
 # List of aditional makefile commands:
+.PHONY: all
 .PHONY: clean
 .PHONY: doc
+
+# Command to generate all targets:
+all: $(EXE) doc
 
 # Command to clean generated files:
 clean:
