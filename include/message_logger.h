@@ -257,14 +257,14 @@ typedef struct {
 //! \return Returns 0 when successfully executed and -1 if an error occurs.
 //!
 //! This function configures the Message Logger module to write any messages to
-//! a log file, in adition to priting them on the screen. Each message written
-//! on the log file has the message's contents and a timestamp.
+//! a log file, in addition to printing them on the screen. Each message
+//! written on the log file has the message's contents and a timestamp.
 //!
 //! If an error occurs when configuring the log file, this function will return
 //! -1 and the Message Logger will print an error message explaining what went
 //! wrong.
 //!
-//! \note After the Message Logger module is no longer used, the funciton
+//! \note After the Message Logger module is no longer used, the function
 //! logger_module_clean_up() must be called to close the log file created.
 //!
 //! \par Usage example
@@ -283,7 +283,7 @@ int configure_log_file(const char *file_name, LogFileMode file_mode);
 //! This function configures the Message Logger module to enable thread safety
 //! when logging messages or executing other logger operations. This allows the
 //! logger to be utilized in a multi-threaded environment with the pthreads
-//! library without the nuissance of race conditions or other problems.
+//! library without the nuisance of race conditions or other problems.
 //!
 //! If an error occurs when enabling thread safety, this function will return
 //! -1 and the Message Logger will print an error message explaining what went
@@ -480,8 +480,8 @@ int set_logger_tag_colors(
 //!
 //! This function sets the \link TimeFormat::string_representation
 //! string_representation \endlink in the \link #logger_time_fmt
-//! Message Logger's time format. \endlink This format is used when
-//! timestamping messages saved to a log file, if one is configured. The time
+//! Message Logger's time format. \endlink This format is used when adding a
+//! timestamp to messages saved to a log file, if one is configured. The time
 //! format information is copied from a valid, non-NULL pointer provided by the
 //! user.
 //!
